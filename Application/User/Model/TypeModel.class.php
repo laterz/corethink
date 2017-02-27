@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace User\Model;
+
 use Think\Model;
+
 /**
  * 用户类型模型
  * @author jry <598821125@qq.com>
  */
-class TypeModel extends Model {
+class TypeModel extends Model
+{
     /**
      * 数据库表名
      * @author jry <598821125@qq.com>

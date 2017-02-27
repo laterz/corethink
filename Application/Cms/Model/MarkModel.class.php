@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Cms\Model;
+
 use Think\Model;
+
 /**
  * 收藏模型
  * @author jry <598821125@qq.com>
  */
-class MarkModel extends Model {
+class MarkModel extends Model
+{
     /**
      * 模块名称
      * @author jry <598821125@qq.com>
@@ -48,12 +51,13 @@ class MarkModel extends Model {
      * 获取收藏状态
      * @author jry <598821125@qq.com>
      */
-    public function get_mark_status($data_id) {
-        $con = array();
-        $con['uid'] = is_login();
+    public function get_mark_status($data_id)
+    {
+        $con            = array();
+        $con['uid']     = is_login();
         $con['data_id'] = $data_id;
-        $con['status'] = 1;
-        $result = $this->where($con)->find();
+        $con['status']  = 1;
+        $result         = $this->where($con)->find();
         return $result;
     }
 }

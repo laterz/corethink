@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Admin\Model;
+
 use Think\Model;
+
 /**
  * 用户模型
  * @author jry <598821125@qq.com>
  */
-class UserModel extends Model {
+class UserModel extends Model
+{
     /**
      * 数据库表名
      * @author jry <598821125@qq.com>
@@ -76,7 +79,8 @@ class UserModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_find(&$result, $options) {
+    protected function _after_find(&$result, $options)
+    {
         $result['avatar_url'] = get_cover($result['avatar'], 'avatar');
     }
 
@@ -84,8 +88,9 @@ class UserModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_select(&$result, $options) {
-        foreach($result as &$record){
+    protected function _after_select(&$result, $options)
+    {
+        foreach ($result as &$record) {
             $this->_after_find($record, $options);
         }
     }
@@ -94,21 +99,22 @@ class UserModel extends Model {
      * 用户登录
      * @author jry <598821125@qq.com>
      */
-    public function login($username, $password, $map) {
+    public function login($username, $password, $map)
+    {
         //去除前后空格
         $username = trim($username);
 
         //匹配登录方式
         if (preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $username)) {
-            $map['email'] = array('eq', $username);     // 邮箱登陆
+            $map['email'] = array('eq', $username); // 邮箱登陆
         } elseif (preg_match("/^1\d{10}$/", $username)) {
-            $map['mobile'] = array('eq', $username);    // 手机号登陆
+            $map['mobile'] = array('eq', $username); // 手机号登陆
         } else {
-            $map['username'] = array('eq', $username);  // 用户名登陆
+            $map['username'] = array('eq', $username); // 用户名登陆
         }
 
-        $map['status']   = array('eq', 1);
-        $user_info = $this->where($map)->find(); //查找用户
+        $map['status'] = array('eq', 1);
+        $user_info     = $this->where($map)->find(); //查找用户
         if (!$user_info) {
             $this->error = '用户不存在或被禁用！';
         } else {
@@ -125,7 +131,8 @@ class UserModel extends Model {
      * 设置登录状态
      * @author jry <598821125@qq.com>
      */
-    public function auto_login($user) {
+    public function auto_login($user)
+    {
         // 记录登录SESSION和COOKIES
         $auth = array(
             'uid'      => $user['id'],
@@ -144,14 +151,15 @@ class UserModel extends Model {
      * @return string       签名
      * @author jry <598821125@qq.com>
      */
-    public function data_auth_sign($data) {
+    public function data_auth_sign($data)
+    {
         // 数据类型检测
         if (!is_array($data)) {
-            $data = (array)$data;
+            $data = (array) $data;
         }
         ksort($data); //排序
         $code = http_build_query($data); // url编码并生成query字符串
-        $sign = sha1($code);  // 生成签名
+        $sign = sha1($code); // 生成签名
         return $sign;
     }
 
@@ -160,7 +168,8 @@ class UserModel extends Model {
      * @return integer 0-未登录，大于0-当前登录用户ID
      * @author jry <598821125@qq.com>
      */
-    public function is_login() {
+    public function is_login()
+    {
         $user = session('user_auth');
         if (empty($user)) {
             return 0;

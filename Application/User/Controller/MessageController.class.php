@@ -2,23 +2,27 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace User\Controller;
-use Home\Controller\HomeController;
+
 use Common\Util\Think\Page;
+use Home\Controller\HomeController;
+
 /**
  * 消息控制器
  * @author jry <598821125@qq.com>
  */
-class MessageController extends HomeController{
+class MessageController extends HomeController
+{
     /**
      * 初始化方法
      * @author jry <598821125@qq.com>
      */
-    protected function _initialize(){
+    protected function _initialize()
+    {
         parent::_initialize();
         $this->is_login();
     }
@@ -28,17 +32,18 @@ class MessageController extends HomeController{
      * @param $type 消息类型
      * @author jry <598821125@qq.com>
      */
-    public function index($type = 0){
-        $map['type'] = array('eq', $type);
-        $map['status'] = array('eq', 1);
-        $map['to_uid'] = array('eq', is_login());
+    public function index($type = 0)
+    {
+        $map['type']    = array('eq', $type);
+        $map['status']  = array('eq', 1);
+        $map['to_uid']  = array('eq', is_login());
         $message_object = D('User/Message');
-        $p = !empty($_GET["p"]) ? $_GET['p'] : 1;
-        $data_list = $message_object
-                   ->page($p, C('ADMIN_PAGE_ROWS'))
-                   ->where($map)
-                   ->order('sort desc,id desc')
-                   ->select();
+        $p              = !empty($_GET["p"]) ? $_GET['p'] : 1;
+        $data_list      = $message_object
+            ->page($p, C('ADMIN_PAGE_ROWS'))
+            ->where($map)
+            ->order('sort desc,id desc')
+            ->select();
         $page = new Page(
             $message_object->where($map)->count(),
             C('ADMIN_PAGE_ROWS')
@@ -63,10 +68,11 @@ class MessageController extends HomeController{
      * @param $type 消息类型
      * @author jry <598821125@qq.com>
      */
-    public function detail($id){
-        $message_object = D('User/Message');
+    public function detail($id)
+    {
+        $message_object    = D('User/Message');
         $user_message_info = $message_object->find($id);
-        if(!$user_message_info){
+        if (!$user_message_info) {
             $this->error('该消息已禁用或不存在');
         }
         $map['id'] = array('eq', $id);
@@ -82,8 +88,9 @@ class MessageController extends HomeController{
      * @param $type 消息类型
      * @author jry <598821125@qq.com>
      */
-    public function newMessageCount($type = null){
-        $data['status'] = 1;
+    public function newMessageCount($type = null)
+    {
+        $data['status']      = 1;
         $data['new_message'] = D('User/Message')->newMessageCount($type);
         $this->ajaxReturn($data);
     }
@@ -93,7 +100,8 @@ class MessageController extends HomeController{
      * @param $type 消息类型
      * @author jry <598821125@qq.com>
      */
-    public function setRead($ids = null, $type = null){
+    public function setRead($ids = null, $type = null)
+    {
         $map['status']  = array('eq', 1);
         $map['to_uid']  = array('eq', is_login());
         $map['is_read'] = array('eq', 0);

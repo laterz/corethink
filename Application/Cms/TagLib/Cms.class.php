@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Cms\TagLib;
+
 use Think\Template\TagLib;
+
 /**
  * 标签库
  * @author jry <598821125@qq.com>
  */
-class Cms extends TagLib {
+class Cms extends TagLib
+{
     /**
      * 定义标签列表
      * @author jry <598821125@qq.com>
@@ -23,21 +26,22 @@ class Cms extends TagLib {
         'article_list'  => array('attr' => 'name,cid,limit,page,order,child', 'close' => 1), //文章列表
         'new_list'      => array('attr' => 'name,doc_type,limit,order', 'close' => 1), //最新文章列表
         'comment_list'  => array('attr' => 'name,data_id,limit,page,order', 'close' => 1), //评论列表
-        'similar_list'  => array('attr' => 'name,tags,limit,order', 'close' => 1),  //相关列表
+        'similar_list'  => array('attr' => 'name,tags,limit,order', 'close' => 1), //相关列表
     );
 
     /**
      * 面包屑导航列表
      * @author jry <598821125@qq.com>
      */
-    public function _breadcrumb($tag, $content) {
-        $name   = $tag['name'];
-        $cid    = $tag['cid'];
-        $group  = $tag['group'] ? : 1;
-        $parse  = '<?php ';
-        $parse .= '$__PARENT_CATEGORY__ = D("Cms/Category\')->getParentCategory('.$cid.', '.$group.');';
+    public function _breadcrumb($tag, $content)
+    {
+        $name  = $tag['name'];
+        $cid   = $tag['cid'];
+        $group = $tag['group'] ?: 1;
+        $parse = '<?php ';
+        $parse .= '$__PARENT_CATEGORY__ = D("Cms/Category\')->getParentCategory(' . $cid . ', ' . $group . ');';
         $parse .= ' ?>';
-        $parse .= '<volist name="__PARENT_CATEGORY__" id="'. $name .'">';
+        $parse .= '<volist name="__PARENT_CATEGORY__" id="' . $name . '">';
         $parse .= $content;
         $parse .= '</volist>';
         return $parse;
@@ -47,16 +51,17 @@ class Cms extends TagLib {
      * 栏目分类列表
      * @author jry <598821125@qq.com>
      */
-    public function _category_list($tag, $content) {
-        $name   = $tag['name'];
-        $pid    = $tag['pid'] ? : 0;
-        $limit  = $tag['limit'] ? :10;
-        $page   = $tag['page'] ? : 1;
-        $group  = $tag['group'] ? : 1;
-        $parse  = '<?php ';
-        $parse .= '$__CATEGORYLIST__ = D("Cms/Category")->getCategoryTree('.$pid.', '.$limit.', '.$page.', '.$group.');';
+    public function _category_list($tag, $content)
+    {
+        $name  = $tag['name'];
+        $pid   = $tag['pid'] ?: 0;
+        $limit = $tag['limit'] ?: 10;
+        $page  = $tag['page'] ?: 1;
+        $group = $tag['group'] ?: 1;
+        $parse = '<?php ';
+        $parse .= '$__CATEGORYLIST__ = D("Cms/Category")->getCategoryTree(' . $pid . ', ' . $limit . ', ' . $page . ', ' . $group . ');';
         $parse .= ' ?>';
-        $parse .= '<volist name="__CATEGORYLIST__" id="'. $name .'">';
+        $parse .= '<volist name="__CATEGORYLIST__" id="' . $name . '">';
         $parse .= $content;
         $parse .= '</volist>';
         return $parse;
@@ -66,18 +71,19 @@ class Cms extends TagLib {
      * 文章列表
      * @author jry <598821125@qq.com>
      */
-    public function _article_list($tag, $content) {
-        $name   = $tag['name'];
-        $cid    = $tag['cid'] ? : 1;
-        $limit  = $tag['limit'] ? : 10;
-        $page   = $tag['page'] ? : 1;
-        $order  = $tag['order'] ? : '';
-        $child  = $tag['child'] ? : '';
-        $parse  = '<?php ';
+    public function _article_list($tag, $content)
+    {
+        $name  = $tag['name'];
+        $cid   = $tag['cid'] ?: 1;
+        $limit = $tag['limit'] ?: 10;
+        $page  = $tag['page'] ?: 1;
+        $order = $tag['order'] ?: '';
+        $child = $tag['child'] ?: '';
+        $parse = '<?php ';
         $parse .= '$map = array("status" => "1");';
-        $parse .= '$__ARTICLE_LIST__ = D("Cms/Index")->getList('.$cid.', '.$limit.', '.$page.', "'.$order.'", "'.$child.'", $map);';
+        $parse .= '$__ARTICLE_LIST__ = D("Cms/Index")->getList(' . $cid . ', ' . $limit . ', ' . $page . ', "' . $order . '", "' . $child . '", $map);';
         $parse .= ' ?>';
-        $parse .= '<volist name="__ARTICLE_LIST__" id="'. $name .'">';
+        $parse .= '<volist name="__ARTICLE_LIST__" id="' . $name . '">';
         $parse .= $content;
         $parse .= '</volist>';
         return $parse;
@@ -87,17 +93,18 @@ class Cms extends TagLib {
      * 最新文章列表
      * @author jry <598821125@qq.com>
      */
-    public function _new_list($tag, $content) {
-        $name   = $tag['name'];
+    public function _new_list($tag, $content)
+    {
+        $name     = $tag['name'];
         $doc_type = $tag['doc_type'];
-        $limit  = $tag['limit'] ? : 10;
-        $page   = $tag['page'] ? : 1;
-        $order  = $tag['order'] ? : '';
-        $parse  = '<?php ';
+        $limit    = $tag['limit'] ?: 10;
+        $page     = $tag['page'] ?: 1;
+        $order    = $tag['order'] ?: '';
+        $parse    = '<?php ';
         $parse .= '$map = array("status" => "1");';
-        $parse .= '$__ARTICLE_LIST__ = D("Cms/Index")->getNewList('.$doc_type.', '.$limit.', '.$page.', "'.$order.'", $map);';
+        $parse .= '$__ARTICLE_LIST__ = D("Cms/Index")->getNewList(' . $doc_type . ', ' . $limit . ', ' . $page . ', "' . $order . '", $map);';
         $parse .= ' ?>';
-        $parse .= '<volist name="__ARTICLE_LIST__" id="'. $name .'">';
+        $parse .= '<volist name="__ARTICLE_LIST__" id="' . $name . '">';
         $parse .= $content;
         $parse .= '</volist>';
         return $parse;
@@ -107,18 +114,19 @@ class Cms extends TagLib {
      * 评论列表
      * @author jry <598821125@qq.com>
      */
-    public function _comment_list($tag, $content) {
+    public function _comment_list($tag, $content)
+    {
         $name    = $tag['name'];
         $data_id = $tag['data_id'];
-        $limit   = $tag['limit'] ? : 10;
-        $page    = $tag['page'] ? :1 ;
-        $order   = $tag['order'] ? : 'sort desc,id asc';
+        $limit   = $tag['limit'] ?: 10;
+        $page    = $tag['page'] ?: 1;
+        $order   = $tag['order'] ?: 'sort desc,id asc';
         $parse   = '<?php ';
-        $parse  .= '$__COMMENT_LIST__ = D("Cms/Comment")->getCommentList('.$data_id.', '.$limit.', '.$page.', "'.$order.'");';
-        $parse  .= ' ?>';
-        $parse  .= '<volist name="__COMMENT_LIST__" id="'. $name .'">';
-        $parse  .= $content;
-        $parse  .= '</volist>';
+        $parse .= '$__COMMENT_LIST__ = D("Cms/Comment")->getCommentList(' . $data_id . ', ' . $limit . ', ' . $page . ', "' . $order . '");';
+        $parse .= ' ?>';
+        $parse .= '<volist name="__COMMENT_LIST__" id="' . $name . '">';
+        $parse .= $content;
+        $parse .= '</volist>';
         return $parse;
     }
 
@@ -126,14 +134,15 @@ class Cms extends TagLib {
      * 相关列表
      * @author jry <598821125@qq.com>
      */
-    public function _similar_list($tag, $content) {
-        $name   = $tag['name'];
-        $tags   = $tag['tags'];
-        $limit  = $tag['limit'] ? : 4;
-        $parse  = '<?php ';
-        $parse .= '$__SIMILARLIST__ = D("Cms/Index")->getSimilar('.$tags.','.$limit.');';
+    public function _similar_list($tag, $content)
+    {
+        $name  = $tag['name'];
+        $tags  = $tag['tags'];
+        $limit = $tag['limit'] ?: 4;
+        $parse = '<?php ';
+        $parse .= '$__SIMILARLIST__ = D("Cms/Index")->getSimilar(' . $tags . ',' . $limit . ');';
         $parse .= ' ?>';
-        $parse .= '<volist name="__SIMILARLIST__" id="'.$name.'">';
+        $parse .= '<volist name="__SIMILARLIST__" id="' . $name . '">';
         $parse .= $content;
         $parse .= '</volist>';
         return $parse;

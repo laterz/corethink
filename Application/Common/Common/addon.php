@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
@@ -14,8 +14,9 @@
  * @return void
  * @author jry <598821125@qq.com>
  */
-function hook($hook, $params = array()) {
-    \Think\Hook::listen($hook,$params);
+function hook($hook, $params = array())
+{
+    \Think\Hook::listen($hook, $params);
 }
 
 /**
@@ -23,7 +24,8 @@ function hook($hook, $params = array()) {
  * @param strng $name 插件名
  * @author jry <598821125@qq.com>
  */
-function get_addon_class($name) {
+function get_addon_class($name)
+{
     $class = "Addons\\{$name}\\{$name}Addon";
     return $class;
 }
@@ -34,6 +36,7 @@ function get_addon_class($name) {
  * @param array $param 参数
  * @author jry <598821125@qq.com>
  */
-function addons_url($url, $param = array()) {
+function addons_url($url, $param = array())
+{
     return D('Admin/Addon')->getAddonUrl($url, $param);
 }

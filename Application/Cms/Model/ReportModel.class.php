@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Cms\Model;
+
 use Think\Model;
+
 /**
  * 举报模型
  * @author jry <598821125@qq.com>
  */
-class ReportModel extends Model {
+class ReportModel extends Model
+{
     /**
      * 数据库真实表名
      * 一般为了数据库的整洁，同时又不影响Model和Controller的名称
@@ -26,10 +29,10 @@ class ReportModel extends Model {
      * @author jry <598821125@qq.com>
      */
     protected $_validate = array(
-        array('data_id','require','请填写举报项目', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('reason','require','请填写举报理由', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('abstract','require','请填写详情', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('mobile','require','请填写电话', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('data_id', 'require', '请填写举报项目', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('reason', 'require', '请填写举报理由', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('abstract', 'require', '请填写详情', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('mobile', 'require', '请填写电话', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
     );
 
     /**
@@ -47,7 +50,8 @@ class ReportModel extends Model {
      * 举报理由
      * @author jry <598821125@qq.com>
      */
-    public function reason_list($id) {
+    public function reason_list($id)
+    {
         $list[1] = '虚假信息';
         $list[2] = '涉嫌诈骗';
         $list[3] = '辱骂他人';

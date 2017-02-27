@@ -2,18 +2,21 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace User\Model;
+
 use Think\Model;
+
 /**
  * 用户字段模型
  * 该类参考了OneThink的部分实现
  * @author huajie <banhuajie@163.com>
  */
-class AttributeModel extends Model{
+class AttributeModel extends Model
+{
     /**
      * 数据库表名
      * @author jry <598821125@qq.com>
@@ -56,11 +59,12 @@ class AttributeModel extends Model{
      * 检查同一张表是否有相同的字段
      * @author huajie <banhuajie@163.com>
      */
-    protected function checkName(){
-        $map['name'] = array('eq', I('post.name'));
+    protected function checkName()
+    {
+        $map['name']      = array('eq', I('post.name'));
         $map['user_type'] = array('eq', I('post.user_type'));
-        $id = I('post.id');
-        if(!empty($id)){
+        $id               = I('post.id');
+        if (!empty($id)) {
             $map['id'] = array('neq', $id);
         }
         $result = $this->where($map)->find();
@@ -73,10 +77,11 @@ class AttributeModel extends Model{
      * @return intger 是否存在
      * @author huajie <banhuajie@163.com>
      */
-    protected function checkTableExist($user_type){
-        $table_name = C('DB_PREFIX').'user_'.D('User/Type')->getfieldById($user_type, 'name');
+    protected function checkTableExist($user_type)
+    {
+        $table_name       = C('DB_PREFIX') . 'user_' . D('User/Type')->getfieldById($user_type, 'name');
         $this->table_name = strtolower($table_name);
-        $res = M()->query("SHOW TABLES LIKE '".$this->table_name."'");
+        $res              = M()->query("SHOW TABLES LIKE '" . $this->table_name . "'");
         return count($res);
     }
 
@@ -86,29 +91,30 @@ class AttributeModel extends Model{
      * @return boolean true 成功 ， false 失败
      * @author huajie <banhuajie@163.com>
      */
-    public function addField($field){
+    public function addField($field)
+    {
         //检查表是否存在
         $table_exist = $this->checkTableExist($field['user_type']);
 
         //获取默认值
-        if($field['value'] === ''){
+        if ($field['value'] === '') {
             $default = '';
-        }elseif (is_numeric($field['value'])){
-            $default = ' DEFAULT '.$field['value'];
-        }elseif (is_string($field['value'])){
-            $default = ' DEFAULT \''.$field['value'].'\'';
-        }else {
+        } elseif (is_numeric($field['value'])) {
+            $default = ' DEFAULT ' . $field['value'];
+        } elseif (is_string($field['value'])) {
+            $default = ' DEFAULT \'' . $field['value'] . '\'';
+        } else {
             $default = '';
         }
 
-        if($table_exist){
+        if ($table_exist) {
             $sql = <<<sql
                 ALTER TABLE `{$this->table_name}`
 ADD COLUMN `{$field['name']}` {$field['field']} {$default} COMMENT '{$field['title']}';
 sql;
-        }else{
-        //新建表
-        $sql = <<<sql
+        } else {
+            //新建表
+            $sql = <<<sql
             CREATE TABLE IF NOT EXISTS `{$this->table_name}` (
             `uid` int(11) UNSIGNED NOT NULL COMMENT 'UID' ,
             `{$field['name']}` {$field['field']} {$default} COMMENT '{$field['title']}' ,
@@ -132,7 +138,8 @@ sql;
      * @return boolean true 成功 ， false 失败
      * @author huajie <banhuajie@163.com>
      */
-    public function updateField($field){
+    public function updateField($field)
+    {
         //检查表是否存在
         $table_exist = $this->checkTableExist($field['user_type']);
 
@@ -140,7 +147,7 @@ sql;
         $last_field = $this->getFieldById($field['id'], 'name');
 
         //获取默认值
-        $default = $field['value'] !='' ? ' DEFAULT \''.$field['value'].'\'' : '';
+        $default = $field['value'] != '' ? ' DEFAULT \'' . $field['value'] . '\'' : '';
 
         $sql = <<<sql
             ALTER TABLE `{$this->table_name}`
@@ -156,10 +163,11 @@ sql;
      * @return boolean true 成功 ， false 失败
      * @author huajie <banhuajie@163.com>
      */
-    public function deleteField($field){
+    public function deleteField($field)
+    {
         //检查表是否存在
         $table_exist = $this->checkTableExist($field['user_type']);
-        if($table_exist){
+        if ($table_exist) {
             $sql = <<<sql
                 ALTER TABLE `{$this->table_name}`
 DROP COLUMN `{$field['name']}`;

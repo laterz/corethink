@@ -2,18 +2,21 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Admin\Model;
+
 use Think\Model;
 use \Common\Util\Tree;
+
 /**
  * 导航模型
  * @author jry <598821125@qq.com>
  */
-class NavModel extends Model {
+class NavModel extends Model
+{
     /**
      * 数据库表名
      * @author jry <598821125@qq.com>
@@ -28,7 +31,7 @@ class NavModel extends Model {
         array('group', 'require', '导航分组必须', self::MUST_VALIDATE, 'regex', self::MODEL_INSERT),
         array('title', 'require', '导航标题不能为空', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
         array('type', 'require', '导航类型不能为空', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('url', '0,255', '链接长度为0-25个字符', self::EXISTS_VALIDATE, 'length',self::MODEL_BOTH),
+        array('url', '0,255', '链接长度为0-25个字符', self::EXISTS_VALIDATE, 'length', self::MODEL_BOTH),
     );
 
     /**
@@ -46,7 +49,8 @@ class NavModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_find(&$result, $options) {
+    protected function _after_find(&$result, $options)
+    {
         // 处理不同导航类型
         switch ($result['type']) {
             case 'link':
@@ -63,11 +67,11 @@ class NavModel extends Model {
                 break;
             case 'module':
                 $result['module_name'] = $result['value'];
-                $result['href'] = U('/'. ucfirst($result['value']));
+                $result['href']        = U('/' . ucfirst($result['value']));
                 break;
             case 'page':
                 $result['content'] = $result['value'];
-                $result['href'] = U('Home/Index/page', array('id' => $result['id']));
+                $result['href']    = U('Home/Index/page', array('id' => $result['id']));
                 break;
         }
     }
@@ -76,8 +80,9 @@ class NavModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_select(&$result, $options) {
-        foreach($result as &$record){
+    protected function _after_select(&$result, $options)
+    {
+        foreach ($result as &$record) {
             $this->_after_find($record, $options);
         }
     }
@@ -86,7 +91,8 @@ class NavModel extends Model {
      * 导航类型
      * @author jry <598821125@qq.com>
      */
-    public function nav_type($id) {
+    public function nav_type($id)
+    {
         $list['link']   = '链接';
         $list['module'] = '模块';
         $list['page']   = '单页';
@@ -97,7 +103,8 @@ class NavModel extends Model {
      * 根据导航类型获取值
      * @author jry <598821125@qq.com>
      */
-    public function get_value_by_type($value) {
+    public function get_value_by_type($value)
+    {
         if (!$value) {
             switch (I('post.type')) {
                 case 'link':
@@ -121,16 +128,17 @@ class NavModel extends Model {
      * @return array 参数导航和父类的信息集合
      * @author jry <598821125@qq.com>
      */
-    public function getParentNav($id, $group = 'main') {
+    public function getParentNav($id, $group = 'main')
+    {
         if (empty($id)) {
             return false;
         }
         $con['status'] = 1;
         $con['group']  = array('eq', $group);
-        $nav_list = $this->where($con)->field(true)->order('sort asc,id asc')->select();
-        $current_nav = $this->field(true)->find($cid); //获取当前导航的信息
-        $result[] = $current_nav;
-        $pid = $current_nav['pid'];
+        $nav_list      = $this->where($con)->field(true)->order('sort asc,id asc')->select();
+        $current_nav   = $this->field(true)->find($cid); //获取当前导航的信息
+        $result[]      = $current_nav;
+        $pid           = $current_nav['pid'];
         while (true) {
             foreach ($nav_list as $key => $val) {
                 if ($val['id'] == $pid) {
@@ -153,17 +161,18 @@ class NavModel extends Model {
      * @return array          导航树
      * @author jry <598821125@qq.com>
      */
-    public function getNavTree($id = 0, $group = 'main', $field = true) {
+    public function getNavTree($id = 0, $group = 'main', $field = true)
+    {
         // 获取当前导航信息
-        if ((int)$id > 0) {
+        if ((int) $id > 0) {
             $info = $this->find($id);
             $id   = $info['id'];
         }
         // 获取所有导航
         $map['status'] = array('eq', 1);
         $map['group']  = array('eq', $group);
-        $tree = new Tree();
-        $list = $this->field($field)->where($map)->order('sort asc,id asc')->select();
+        $tree          = new Tree();
+        $list          = $this->field($field)->where($map)->order('sort asc,id asc')->select();
 
         // 返回当前导航的子导航树
         $list = $tree->list_to_tree(
@@ -171,7 +180,7 @@ class NavModel extends Model {
             $pk = 'id',
             $pid = 'pid',
             $child = '_child',
-            $root = (int)$id
+            $root = (int) $id
         );
         if (!$list) {
             return $this->getSameLevelNavTree($id);
@@ -185,19 +194,20 @@ class NavModel extends Model {
      * @return array       导航树
      * @author jry <598821125@qq.com>
      */
-    public function getSameLevelNavTree($id = 0, $group = 'main') {
+    public function getSameLevelNavTree($id = 0, $group = 'main')
+    {
         //获取当前导航信息
-        if ((int)$id > 0) {
+        if ((int) $id > 0) {
             $nav_info    = $this->find($id);
             $parent_info = $this->find($nav_info['pid']);
-            $id   = $info['id'];
+            $id          = $info['id'];
         }
         //获取所有导航
         $map['status'] = array('eq', 1);
         $map['group']  = array('eq', $group);
         $map['pid']    = array('eq', $nav_info['pid']);
-        $tree = new Tree();
-        $list = $this->field($field)->where($map)->order('sort asc,id asc')->select();
+        $tree          = new Tree();
+        $list          = $this->field($field)->where($map)->order('sort asc,id asc')->select();
         return $list;
     }
 }
