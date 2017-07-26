@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Cms\Model;
+
 use Think\Model;
+
 /**
  * 文章模型
  * @author jry <598821125@qq.com>
  */
-class CmsArticleModel extends Model {
+class CmsArticleModel extends Model
+{
     /**
      * 模块名称
      * @author jry <598821125@qq.com>

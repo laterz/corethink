@@ -2,18 +2,21 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Cms\Model;
+
 use Think\Model;
+
 /**
  * 文档字段模型
  * 该类参考了OneThink的部分实现
  * @author huajie <banhuajie@163.com>
  */
-class AttributeModel extends Model {
+class AttributeModel extends Model
+{
     /**
      * 模块名称
      * @author jry <598821125@qq.com>
@@ -64,10 +67,11 @@ class AttributeModel extends Model {
      * 检查同一张表是否有相同的字段
      * @author huajie <banhuajie@163.com>
      */
-    protected function checkName() {
-        $map['name'] = array('eq', I('post.name'));
+    protected function checkName()
+    {
+        $map['name']     = array('eq', I('post.name'));
         $map['doc_type'] = array('eq', I('post.doc_type'));
-        $id = I('post.id');
+        $id              = I('post.id');
         if (!empty($id)) {
             $map['id'] = array('neq', $id);
         }
@@ -81,10 +85,11 @@ class AttributeModel extends Model {
      * @return intger 是否存在
      * @author huajie <banhuajie@163.com>
      */
-    protected function checkTableExist($doc_type) {
-        $table_name = C('DB_PREFIX').$this->moduleName.'_'.D($this->moduleName.'/Type')->getfieldById($doc_type, 'name');
+    protected function checkTableExist($doc_type)
+    {
+        $table_name       = C('DB_PREFIX') . $this->moduleName . '_' . D($this->moduleName . '/Type')->getfieldById($doc_type, 'name');
         $this->table_name = strtolower($table_name);
-        $res = M()->query("SHOW TABLES LIKE '".$this->table_name."'");
+        $res              = M()->query("SHOW TABLES LIKE '" . $this->table_name . "'");
         return count($res);
     }
 
@@ -94,7 +99,8 @@ class AttributeModel extends Model {
      * @return boolean true 成功 ， false 失败
      * @author huajie <banhuajie@163.com>
      */
-    public function addField($field) {
+    public function addField($field)
+    {
         //检查表是否存在
         $table_exist = $this->checkTableExist($field['doc_type']);
 
@@ -102,9 +108,9 @@ class AttributeModel extends Model {
         if ($field['value'] === '') {
             $default = '';
         } else if (is_numeric($field['value'])) {
-            $default = ' DEFAULT '.$field['value'];
+            $default = ' DEFAULT ' . $field['value'];
         } else if (is_string($field['value'])) {
-            $default = ' DEFAULT \''.$field['value'].'\'';
+            $default = ' DEFAULT \'' . $field['value'] . '\'';
         } else {
             $default = '';
         }
@@ -115,8 +121,8 @@ class AttributeModel extends Model {
 ADD COLUMN `{$field['name']}` {$field['field']} {$default} COMMENT '{$field['title']}';
 sql;
         } else {
-        //新建表
-        $sql = <<<sql
+            //新建表
+            $sql = <<<sql
             CREATE TABLE IF NOT EXISTS `{$this->table_name}` (
             `id`  int(10) UNSIGNED NOT NULL COMMENT 'ID' ,
             `{$field['name']}` {$field['field']} {$default} COMMENT '{$field['title']}' ,
@@ -140,7 +146,8 @@ sql;
      * @return boolean true 成功 ， false 失败
      * @author huajie <banhuajie@163.com>
      */
-    public function updateField($field) {
+    public function updateField($field)
+    {
         //检查表是否存在
         $table_exist = $this->checkTableExist($field['doc_type']);
 
@@ -148,7 +155,7 @@ sql;
         $last_field = $this->getFieldById($field['id'], 'name');
 
         //获取默认值
-        $default = $field['value'] !='' ? ' DEFAULT \''.$field['value'].'\'' : '';
+        $default = $field['value'] != '' ? ' DEFAULT \'' . $field['value'] . '\'' : '';
 
         $sql = <<<sql
             ALTER TABLE `{$this->table_name}`
@@ -164,7 +171,8 @@ sql;
      * @return boolean true 成功 ， false 失败
      * @author huajie <banhuajie@163.com>
      */
-    public function deleteField($field) {
+    public function deleteField($field)
+    {
         //检查表是否存在
         $table_exist = $this->checkTableExist($field['doc_type']);
         if ($table_exist) {

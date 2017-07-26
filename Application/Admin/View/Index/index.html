@@ -94,6 +94,12 @@
                         </volist>
                     <?php endif; ?>
                 <?php endif; ?>
+                <li>
+                    <a href="http://weex-china.org" target="_blank">
+                        <i class="fa fa-home"></i>
+                        <span>weex中文网</span>
+                    </a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{:U('Admin/Index/removeRuntime')}" class="btn ajax-get no-refresh"><i class="fa fa-trash"></i> 清空缓存</a></li>
@@ -301,20 +307,20 @@
                                                     <td>{:C('WEB_SITE_TITLE')}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>项目开发团队</td>
-                                                    <td>{:C('DEVELOP_TEAM')}</td>
+                                                    <td>友情赞助</td>
+                                                    <td><a target="_blank" href="http://weex-china.oeg">weex中文网</a></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>CoreThink框架</td>
-                                                    <td><a href="{:C('WEBSITE_DOMAIN')}">{:C('COMPANY_NAME')}</a></td>
+                                                    <td>核心框架</td>
+                                                    <td><a target="_blank" href="https://www.lingyun.net">零云</a></td>
                                                 </tr>
                                                 <tr>
                                                     <td>官方网址</td>
-                                                    <td><a href="{:C('WEBSITE_DOMAIN')}">{:C('WEBSITE_DOMAIN')}</a></td>
+                                                    <td><a target="_blank" href="https://www.lingyun.net">https://www.lingyun.net</a></td>
                                                 </tr>
                                                 <tr>
                                                     <td>核心团队</td>
-                                                    <td>江如意、赵瀚卿...</td>
+                                                    <td>江如意、赵瀚卿、张玥、潘美红、郝鸣燃</td>
                                                 </tr>
                                                 <tr>
                                                     <td>官方QQ群</td>
@@ -327,7 +333,7 @@
                                                 <tr>
                                                     <td>联系我们</td>
                                                     <td>
-                                                        service@corethink.cn
+                                                        service@lingyun.net
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -346,20 +352,20 @@
                     <div class="navbar navbar-default" role="navigation">
                         <div class="container-fluid">
                             <div class="navbar-header">
-                                <a class="navbar-brand" target="_blank" href="__ROOT__/">
-                                    <span>{:C('PRODUCT_NAME')}</span>
+                                <a class="navbar-brand" target="_blank" href="https://www.lingyun.net">
+                                    <span>零云</span>
                                 </a>
                             </div>
                             <div class="collapse navbar-collapse navbar-collapse-bottom">
                                 <ul class="nav navbar-nav">
                                     <li>
-                                        <a href="{:C('WEBSITE_DOMAIN')}" class="text-muted" target="_blank">
+                                        <a href="https://www.lingyun.net" class="text-muted" target="_blank">
                                             <span>版权所有 © 2014-<php>echo date("Y",time());</php></span>
                                         </a>
                                     </li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
-                                    <li><a class="text-muted pull-right">框架开发：{:C('COMPANY_NAME')}</a></li>
+                                    <li><a target="_blank" href="https://www.lingyun.net" class="text-muted pull-right">Powered By 零云</a></li>
                                 </ul>
                             </div>
                         </div>

@@ -2,26 +2,29 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Cms\Controller;
+
 use Home\Controller\HomeController;
-use Common\Util\Think\Page;
+
 /**
  * 举报控制器
  * @author jry <598821125@qq.com>
  */
-class ReportController extends HomeController {
+class ReportController extends HomeController
+{
     /**
      * 默认方法
      * @author jry <598821125@qq.com>
      */
-    public function index($data_id) {
+    public function index($data_id)
+    {
         if (IS_POST) {
             $report_object = D('Cms/Report');
-            $data = $report_object->create();
+            $data          = $report_object->create();
             if ($data) {
                 $result = $report_object->add($data);
                 if ($result) {

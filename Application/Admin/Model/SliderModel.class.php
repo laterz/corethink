@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Admin\Model;
+
 use Think\Model;
+
 /**
  * 幻灯片模型
  * @author jry <598821125@qq.com>
  */
-class SliderModel extends Model {
+class SliderModel extends Model
+{
     /**
      * 数据库真实表名
      * 一般为了数据库的整洁，同时又不影响Model和Controller的名称
@@ -45,18 +48,20 @@ class SliderModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_find(&$result, $options) {
-       if ($result['cover']) {
-           $result['cover_url'] = get_cover($result['cover'], 'default');
-       }
+    protected function _after_find(&$result, $options)
+    {
+        if ($result['cover']) {
+            $result['cover_url'] = get_cover($result['cover'], 'default');
+        }
     }
 
     /**
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_select(&$result, $options) {
-        foreach($result as &$record){
+    protected function _after_select(&$result, $options)
+    {
+        foreach ($result as &$record) {
             $this->_after_find($record, $options);
         }
     }
@@ -65,7 +70,8 @@ class SliderModel extends Model {
      * 获取幻灯列表
      * @author jry <598821125@qq.com>
      */
-    public function getList($limit = 10, $page = 1, $order = null, $map = null) {
+    public function getList($limit = 10, $page = 1, $order = null, $map = null)
+    {
         $con["status"] = array("eq", '1');
         if ($map) {
             $map = array_merge($con, $map);
@@ -73,10 +79,10 @@ class SliderModel extends Model {
         if (!$order) {
             $order = 'sort desc, id desc';
         }
-       $slider_list = $this->page($page, $limit)
-                          ->order($order)
-                          ->where($map)
-                          ->select();
+        $slider_list = $this->page($page, $limit)
+            ->order($order)
+            ->where($map)
+            ->select();
 
         return $slider_list;
     }

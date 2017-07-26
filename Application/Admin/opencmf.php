@@ -2,70 +2,70 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 // 模块信息配置
 return array(
     // 模块信息
-    'info' => array(
+    'info'       => array(
         'name'        => 'Admin',
         'title'       => '系统',
         'icon'        => 'fa fa-cog',
         'icon_color'  => '#3CA6F1',
         'description' => '核心系统',
         'developer'   => '南京科斯克网络科技有限公司',
-        'website'     => 'http://www.opencmf.cn',
+        'website'     => 'http://www.lingyun.net',
         'version'     => '1.3.0',
     ),
 
     // 后台菜单及权限节点配置
     'admin_menu' => array(
-        '1' => array(
+        '1'  => array(
             'pid'   => '0',
             'title' => '系统',
             'icon'  => 'fa fa-cog',
             'level' => 'system',
         ),
-        '2' => array(
+        '2'  => array(
             'pid'   => '1',
             'title' => '系统功能',
             'icon'  => 'fa fa-folder-open-o',
         ),
-        '3' => array(
+        '3'  => array(
             'pid'   => '2',
             'title' => '系统设置',
             'icon'  => 'fa fa-wrench',
             'url'   => 'Admin/Config/group',
         ),
-        '4' => array(
+        '4'  => array(
             'pid'   => '3',
             'title' => '修改设置',
             'url'   => 'Admin/Config/groupSave',
         ),
-        '5' => array(
+        '5'  => array(
             'pid'   => '2',
             'title' => '导航管理',
             'icon'  => 'fa fa-map-signs',
             'url'   => 'Admin/Nav/index',
         ),
-        '6' => array(
+        '6'  => array(
             'pid'   => '5',
             'title' => '新增',
             'url'   => 'Admin/Nav/add',
         ),
-        '7' => array(
+        '7'  => array(
             'pid'   => '5',
             'title' => '编辑',
             'url'   => 'Admin/Nav/edit',
         ),
-        '8' => array(
+        '8'  => array(
             'pid'   => '5',
             'title' => '设置状态',
             'url'   => 'Admin/Nav/setStatus',
         ),
-        '9' => array(
+        '9'  => array(
             'pid'   => '2',
             'title' => '幻灯管理',
             'icon'  => 'fa fa-image',
@@ -318,6 +318,6 @@ return array(
             'pid'   => '54',
             'title' => '设置状态',
             'url'   => 'Admin/Addon/setStatus',
-        )
-    )
+        ),
+    ),
 );

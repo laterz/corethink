@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Cms\Model;
+
 use Think\Model;
+
 /**
  * 文章模型
  * @author jry <598821125@qq.com>
  */
-class IndexModel extends Model {
+class IndexModel extends Model
+{
     /**
      * 模块名称
      * @author jry <598821125@qq.com>
@@ -52,18 +55,20 @@ class IndexModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_find(&$result, $options) {
-       if ($result['cid']) {
-           $result['category_info'] = D($this->moduleName.'/Category')->find($result['cid']);
-       }
+    protected function _after_find(&$result, $options)
+    {
+        if ($result['cid']) {
+            $result['category_info'] = D($this->moduleName . '/Category')->find($result['cid']);
+        }
     }
 
     /**
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_select(&$result, $options) {
-        foreach($result as &$record){
+    protected function _after_select(&$result, $options)
+    {
+        foreach ($result as &$record) {
             $this->_after_find($record, $options);
         }
     }
@@ -73,9 +78,10 @@ class IndexModel extends Model {
      * @return int 时间戳
      * @author jry <598821125@qq.com>
      */
-    protected function checkPostAuth() {
+    protected function checkPostAuth()
+    {
         if (MODULE_NAME == 'Home') {
-            $category_post_auth = D($this->moduleName.'/Category')->getFieldById(I('post.cid'), 'post_auth');
+            $category_post_auth = D($this->moduleName . '/Category')->getFieldById(I('post.cid'), 'post_auth');
             if (!$category_post_auth) {
                 return false;
             }
@@ -87,29 +93,31 @@ class IndexModel extends Model {
      * 新增或更新一个文章
      * @author jry <598821125@qq.com>
      */
-    public function update() {
+    public function update()
+    {
         // 处理数据
         $_POST = format_data();
 
         //调用create方法构造数据
-        $cid = I('post.cid');
-        $category_info = D($this->moduleName.'/Category')->find($cid);
-        $doc_type_info = D($this->moduleName.'/Type')->where(array('id' => $category_info['doc_type']))->find();
+        $cid               = I('post.cid');
+        $category_info     = D($this->moduleName . '/Category')->find($cid);
+        $doc_type_info     = D($this->moduleName . '/Type')->where(array('id' => $category_info['doc_type']))->find();
         $_POST['doc_type'] = $doc_type_info['id'];
-        $base_data = $this->create();
+        $base_data         = $this->create();
         if ($base_data) {
             //获取当前分类
-            $extend_table_object = D($this->moduleName.'/'.$this->moduleName.ucfirst($doc_type_info['name']));
-            $extend_data = $extend_table_object->create(); //子模型数据验证
+            $extend_table_object = D($this->moduleName . '/' . $this->moduleName . ucfirst($doc_type_info['name']));
+            $extend_data         = $extend_table_object->create(); //子模型数据验证
             if (!$extend_data) {
                 $this->error = $extend_table_object->getError();
             }
             if ($extend_data) {
-                if (empty($base_data['id'])) { //新增基础内容
+                if (empty($base_data['id'])) {
+                    //新增基础内容
                     $base_id = $this->add();
                     if ($base_id) {
                         $extend_data['id'] = $base_id;
-                        $extend_id = $extend_table_object->add($extend_data);
+                        $extend_id         = $extend_table_object->add($extend_data);
                         if (!$extend_id) {
                             $this->delete($base_id);
                             $this->error = '新增扩展内容出错！';
@@ -143,15 +151,16 @@ class IndexModel extends Model {
      * 获取文章列表
      * @author jry <598821125@qq.com>
      */
-    public function getList($cid, $limit = 10, $page = 1, $order = null, $child = false, $map = null) {
+    public function getList($cid, $limit = 10, $page = 1, $order = null, $child = false, $map = null)
+    {
         //获取分类信息
-        $category_object = D($this->moduleName.'/Category');
-        $category_info = $category_object->find($cid);
-        $base_table = C('DB_PREFIX').$this->tableName;
+        $category_object = D($this->moduleName . '/Category');
+        $category_info   = $category_object->find($cid);
+        $base_table      = C('DB_PREFIX') . $this->tableName;
 
         //获取该分类绑定文章模型的主要字段
-        $type_object = D($this->moduleName.'/Type');
-        $type = $type_object->where('system = 0')->find($category_info['doc_type']);
+        $type_object = D($this->moduleName . '/Type');
+        $type        = $type_object->where('system = 0')->find($category_info['doc_type']);
         if ($type) {
             $this->error = '文档模型错误';
         }
@@ -161,32 +170,32 @@ class IndexModel extends Model {
             $child_cate_ids = $category_object->where(array('pid' => $cid, 'doc_type' => $category_info['doc_type']))->getField('id', true);
             if ($child_cate_ids) {
                 $cid_list[] = $cid;
-                $cid_list = array_merge($cid_list, $child_cate_ids);
+                $cid_list   = array_merge($cid_list, $child_cate_ids);
             }
         } else {
             $cid_list[] = $cid;
         }
 
-        $con["cid"] = array("in", $cid_list);
+        $con["cid"]    = array("in", $cid_list);
         $con["status"] = array("eq", '1');
         if ($map) {
             $map = array_merge($con, $map);
         }
         if (!$order) {
-            $order = 'sort desc,'.$base_table.'.id desc';
+            $order = 'sort desc,' . $base_table . '.id desc';
         }
-        $extend_table = strtolower(C('DB_PREFIX').$this->moduleName.'_'.$type['name']);
-        $return_list = $this->page($page, $limit)
-                             ->order($order)
-                             ->join($extend_table.' ON '.$base_table.'.id = '.$extend_table.'.id')
-                             ->where($map)
-                             ->select();
+        $extend_table = strtolower(C('DB_PREFIX') . $this->moduleName . '_' . $type['name']);
+        $return_list  = $this->page($page, $limit)
+            ->order($order)
+            ->join($extend_table . ' ON ' . $base_table . '.id = ' . $extend_table . '.id')
+            ->where($map)
+            ->select();
 
         // 拼接文章地址
-        $main_field_name = D($this->moduleName.'/Attribute')->getFieldById($type['main_field'], 'name');
+        $main_field_name = D($this->moduleName . '/Attribute')->getFieldById($type['main_field'], 'name');
         foreach ($return_list as $key => &$val) {
-            $val['href'] = U($this->moduleName.'/Index/detail', array('id' => $val['id']));
-            $val['title_url'] = '<a target="_blank" href="'.U($this->moduleName.'/Index/detail', array('id' => $val['id'])).'">'.$val[$main_field_name].'</a>';
+            $val['href']      = U($this->moduleName . '/Index/detail', array('id' => $val['id']));
+            $val['title_url'] = '<a target="_blank" href="' . U($this->moduleName . '/Index/detail', array('id' => $val['id'])) . '">' . $val[$main_field_name] . '</a>';
         }
         return $return_list;
     }
@@ -195,34 +204,35 @@ class IndexModel extends Model {
      * 获取文章列表
      * @author jry <598821125@qq.com>
      */
-    public function getNewList($doc_type = 3, $limit = 10, $page =1, $order = null, $map = null) {
+    public function getNewList($doc_type = 3, $limit = 10, $page = 1, $order = null, $map = null)
+    {
         //获取该分类绑定文章模型的主要字段
-        $type_object = D($this->moduleName.'/Type');
-        $type = $type_object->find($doc_type);
+        $type_object = D($this->moduleName . '/Type');
+        $type        = $type_object->find($doc_type);
         if (!$type) {
             return false;
         }
 
         // 获取文章列表
-        $base_table = C('DB_PREFIX').$this->tableName;
-        $con["status"] = array("eq", '1');
+        $base_table      = C('DB_PREFIX') . $this->tableName;
+        $con["status"]   = array("eq", '1');
         $con["doc_type"] = array("eq", $doc_type);
         if ($map) {
             $map = array_merge($con, $map);
         }
         if (!$order) {
-            $order = 'sort desc,'.$base_table.'.id desc';
+            $order = 'sort desc,' . $base_table . '.id desc';
         }
-        $extend_table = strtolower(C('DB_PREFIX').$this->moduleName.'_'.$type['name']);
+        $extend_table = strtolower(C('DB_PREFIX') . $this->moduleName . '_' . $type['name']);
         $article_list = $this->page($page, $limit)
-                             ->order($order)
-                             ->join($extend_table.' ON '.$base_table.'.id = '.$extend_table.'.id')
-                             ->where($map)
-                             ->select();
+            ->order($order)
+            ->join($extend_table . ' ON ' . $base_table . '.id = ' . $extend_table . '.id')
+            ->where($map)
+            ->select();
 
         // 拼接文章地址
         foreach ($article_list as $key => &$val) {
-            $val['href'] = U($this->moduleName.'/Index/detail', array('id' => $val['id']));
+            $val['href'] = U($this->moduleName . '/Index/detail', array('id' => $val['id']));
         }
         return $article_list;
     }
@@ -231,11 +241,12 @@ class IndexModel extends Model {
      * 获取文章详情
      * @author jry <598821125@qq.com>
      */
-    public function detail($id, $map = null) {
+    public function detail($id, $map = null)
+    {
         //获取基础表信息
-        $con = array();
-        $con['id'] = $id;
-        $con['status'] = array('egt', 1);  // 正常、隐藏两种状态是可以访问的
+        $con           = array();
+        $con['id']     = $id;
+        $con['status'] = array('egt', 1); // 正常、隐藏两种状态是可以访问的
         if ($map) {
             $con = array_merge($con, $map);
         }
@@ -249,7 +260,7 @@ class IndexModel extends Model {
         $result = $this->where(array('id' => $id))->SetInc('view');
 
         // 获取收藏状态
-        $info['mark_status'] = D($this->moduleName.'/Mark')->get_mark_status($info['id']);
+        $info['mark_status'] = D($this->moduleName . '/Mark')->get_mark_status($info['id']);
 
         // 获取作者信息
         $info['user'] = get_user_info($info['uid']);
@@ -258,10 +269,10 @@ class IndexModel extends Model {
         $info['user']['post_count'] = $this->where(array('uid' => $info['uid']))->count();
 
         // 获取评论数量
-        $info['user']['comment_count'] = D($this->moduleName.'/Comment')->where(array('uid' => $info['uid']))->count();
+        $info['user']['comment_count'] = D($this->moduleName . '/Comment')->where(array('uid' => $info['uid']))->count();
 
         // 获取文档模型相关信息
-        $doc_type_info = D($this->moduleName.'/Type')->find($info['category_info']['doc_type']);
+        $doc_type_info = D($this->moduleName . '/Type')->find($info['category_info']['doc_type']);
         if ($doc_type_info['system']) {
             $this->error = '文档类型错误！';
             return false;
@@ -269,8 +280,8 @@ class IndexModel extends Model {
         $info['doc_type_info'] = $doc_type_info;
 
         // 根据文章模型获取扩展表的息
-        $extend_table_object = D($this->moduleName.'/'.$this->moduleName.ucfirst($doc_type_info['name']));
-        $extend_data = $extend_table_object->find($id);
+        $extend_table_object = D($this->moduleName . '/' . $this->moduleName . ucfirst($doc_type_info['name']));
+        $extend_data         = $extend_table_object->find($id);
 
         // 基础信息与扩展信息合并
         if (is_array($extend_data)) {
@@ -278,19 +289,19 @@ class IndexModel extends Model {
         }
 
         // 获取筛选字段
-        $con = array();
-        $con['id'] = array('in', $doc_type_info['filter_field']);
-        $attribute_object = D($this->moduleName.'/Attribute');
-        $filter_field_list = $attribute_object->where($con)->select();
+        $con                   = array();
+        $con['id']             = array('in', $doc_type_info['filter_field']);
+        $attribute_object      = D($this->moduleName . '/Attribute');
+        $filter_field_list     = $attribute_object->where($con)->select();
         $new_filter_field_list = array();
         foreach ($filter_field_list as $key => $val) {
-            $val['options'] = parse_attr($val['options']);
+            $val['options']                      = parse_attr($val['options']);
             $new_filter_field_list[$val['name']] = $val;
         }
         $info['filter_field_list'] = $new_filter_field_list;
 
         // 给文档主要字段赋值，如：文章标题、商品名称
-        $type_main_field  = $attribute_object->getFieldById($doc_type_info['main_field'], 'name');
+        $type_main_field    = $attribute_object->getFieldById($doc_type_info['main_field'], 'name');
         $info['main_field'] = $info[$type_main_field];
 
         // 下载文件地址加密
@@ -298,7 +309,7 @@ class IndexModel extends Model {
             $file_list = explode(',', $info['file']);
             foreach ($file_list as &$file) {
                 $file = D('Admin/Upload')->find($file);
-                $uid = is_login();
+                $uid  = is_login();
                 if ($uid) {
                     $file['token'] = \Think\Crypt::encrypt($file['md5'], user_md5($uid), 3600);
                 } else {
@@ -318,25 +329,26 @@ class IndexModel extends Model {
      * 获取当前分类上一篇文章
      * @author jry <598821125@qq.com>
      */
-    private function getPrevious($info) {
+    private function getPrevious($info)
+    {
         // 获取文档信息
         $map['status'] = array('eq', 1);
-        $map['id'] = array('lt', $info['id']);
-        $map['cid'] = array('eq', $info['cid']);
-        $previous = $this->where($map)->order('id desc')->find();
+        $map['id']     = array('lt', $info['id']);
+        $map['cid']    = array('eq', $info['cid']);
+        $previous      = $this->where($map)->order('id desc')->find();
 
         // 获取扩展信息
         if ($previous) {
-            $type = D($this->moduleName.'/Type')->find($previous['doc_type']);
-            $main_field_name = D($this->moduleName.'/Attribute')->getFieldById($type['main_field'], 'name');
-            $previous['title'] = D($this->moduleName.'/'.$this->moduleName.ucfirst($type['name']))->getFieldById($previous['id'], $main_field_name);
+            $type              = D($this->moduleName . '/Type')->find($previous['doc_type']);
+            $main_field_name   = D($this->moduleName . '/Attribute')->getFieldById($type['main_field'], 'name');
+            $previous['title'] = D($this->moduleName . '/' . $this->moduleName . ucfirst($type['name']))->getFieldById($previous['id'], $main_field_name);
         }
 
         if (!$previous) {
             $previous['title'] = '没有了';
-            $previous['href'] = '#';
+            $previous['href']  = '#';
         } else {
-            $previous['href'] = U($this->moduleName.'/Index/detail', array('id' => $previous['id']));
+            $previous['href'] = U($this->moduleName . '/Index/detail', array('id' => $previous['id']));
         }
         return $previous;
     }
@@ -345,25 +357,26 @@ class IndexModel extends Model {
      * 获取当前分类下一篇文章
      * @author jry <598821125@qq.com>
      */
-    private function getNext($info) {
+    private function getNext($info)
+    {
         // 获取文档信息
         $map['status'] = array('eq', 1);
-        $map['id'] = array('gt', $info['id']);
-        $map['cid'] = array('eq', $info['cid']);
-        $next = $this->where($map)->order('id asc')->find();
+        $map['id']     = array('gt', $info['id']);
+        $map['cid']    = array('eq', $info['cid']);
+        $next          = $this->where($map)->order('id asc')->find();
 
         // 获取扩展信息
         if ($next) {
-            $type = D($this->moduleName.'/Type')->find($next['doc_type']);
-            $main_field_name = D($this->moduleName.'/Attribute')->getFieldById($type['main_field'], 'name');
-            $next['title'] = D($this->moduleName.'/'.$this->moduleName.ucfirst($type['name']))->getFieldById($next['id'], $main_field_name);
+            $type            = D($this->moduleName . '/Type')->find($next['doc_type']);
+            $main_field_name = D($this->moduleName . '/Attribute')->getFieldById($type['main_field'], 'name');
+            $next['title']   = D($this->moduleName . '/' . $this->moduleName . ucfirst($type['name']))->getFieldById($next['id'], $main_field_name);
         }
 
         if (!$next) {
             $next['title'] = '没有了';
-            $next['href'] = '#';
+            $next['href']  = '#';
         } else {
-            $next['href'] = U($this->moduleName.'/Index/detail', array('id' => $next['id']));
+            $next['href'] = U($this->moduleName . '/Index/detail', array('id' => $next['id']));
         }
         return $next;
     }

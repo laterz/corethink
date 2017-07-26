@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
@@ -36,6 +36,6 @@ return array(
         'kindeditor' => array('HTML编辑器 kindeditor', 'text'),
         'editormd'   => array('Markdown编辑器 editormd', 'text'),
         'tags'       => array('标签', 'varchar(128) NOT NULL'),
-        'board  '    => array('拖动排序', 'varchar(256) NOT NULL')
-    )
+        'board  '    => array('拖动排序', 'varchar(256) NOT NULL'),
+    ),
 );

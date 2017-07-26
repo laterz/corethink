@@ -2,25 +2,26 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 
-require_once(APP_PATH . '/Common/Common/addon.php'); //加载插件相关公共函数库
-require_once(APP_PATH . '/Common/Common/developer.php'); //加载开发者二次开发公共函数库
+require_once APP_PATH . '/Common/Common/addon.php'; //加载插件相关公共函数库
+require_once APP_PATH . '/Common/Common/developer.php'; //加载开发者二次开发公共函数库
 
 /**
  * 根据配置类型解析配置
  * @param  string $type  配置类型
  * @param  string  $value 配置值
  */
-function parse_attr($value, $type = null) {
+function parse_attr($value, $type = null)
+{
     switch ($type) {
         default: //解析"1:1\r\n2:3"格式字符串为数组
             $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
-            if (strpos($value,':')) {
-                $value  = array();
+            if (strpos($value, ':')) {
+                $value = array();
                 foreach ($array as $val) {
                     list($k, $v) = explode(':', $val);
                     $value[$k]   = $v;
@@ -38,12 +39,13 @@ function parse_attr($value, $type = null) {
  * @return array
  * @author jry <598821125@qq.com>
  */
-function format_data($data = null) {
+function format_data($data = null)
+{
     //解析数据类似复选框类型的数组型值
     if (!$data) {
         $data = $_POST;
     }
-    foreach($data as $key => $val){
+    foreach ($data as $key => $val) {
         if (is_array($val)) {
             $data[$key] = implode(',', $val);
         } else if (check_date_time($val)) {
@@ -61,7 +63,8 @@ function format_data($data = null) {
  * 获取所有数据并转换成一维数组
  * @author jry <598821125@qq.com>
  */
-function select_list_as_tree($model, $map = null, $extra = null, $key = 'id') {
+function select_list_as_tree($model, $map = null, $extra = null, $key = 'id')
+{
     //获取列表
     $con['status'] = array('eq', 1);
     if ($map) {
@@ -95,12 +98,13 @@ function select_list_as_tree($model, $map = null, $extra = null, $key = 'id') {
  * @return string
  * @author jry <598821125@qq.com>
  */
-function parse_content($str) {
+function parse_content($str)
+{
     // 将img标签的src改为lazy-src用户前台图片lazyload加载
     if (C('STATIC_DOMAIN')) {
-        return preg_replace('/<img.*?src="(.*?Uploads.*?)"(.*?)>/i', "<img class='lazy lazy-fadein img-responsive' style='display:inline-block;' data-src='".C('STATIC_DOMAIN')."$1'>", $str);
+        return preg_replace('/<img.*?src="(.*?Uploads.*?)"(.*?)>/i', "<img class='lazy lazy-fadein img-responsive' style='display:inline-block;' data-src='" . C('STATIC_DOMAIN') . "$1'>", $str);
     } else {
-        return preg_replace('/<img.*?src="(.*?Uploads.*?)"(.*?)>/i', "<img class='lazy lazy-fadein img-responsive' style='display:inline-block;' data-src='".C('HOME_PAGE')."$1'>", $str);
+        return preg_replace('/<img.*?src="(.*?Uploads.*?)"(.*?)>/i', "<img class='lazy lazy-fadein img-responsive' style='display:inline-block;' data-src='" . C('HOME_PAGE') . "$1'>", $str);
     }
 }
 
@@ -115,8 +119,9 @@ function parse_content($str) {
  * @param str $suffix 截断显示字符
  * @return str
  */
-function cut_str($str, $start, $length, $charset='utf-8', $suffix = true) {
-    return \Common\Util\Think\String::cutStr(
+function cut_str($str, $start, $length, $charset = 'utf-8', $suffix = true)
+{
+    return \Common\Util\Think\Str::cutStr(
         $str, $start, $length, $charset, $suffix
     );
 }
@@ -127,8 +132,9 @@ function cut_str($str, $start, $length, $charset='utf-8', $suffix = true) {
  * @return string 处理后内容
  * @author jry <598821125@qq.com>
  */
-function html2text($str) {
-   return \Common\Util\Think\String::html2text($str);
+function html2text($str)
+{
+    return \Common\Util\Think\Str::html2text($str);
 }
 
 /**
@@ -139,8 +145,9 @@ function html2text($str) {
  * @return string
  * @author jry <598821125@qq.com>
  */
-function friendly_date($sTime, $type = 'mohu', $alt = 'false') {
-    $date = new \Common\Util\Think\Date((int)$sTime);
+function friendly_date($sTime, $type = 'mohu', $alt = 'false')
+{
+    $date = new \Common\Util\Think\Date((int) $sTime);
     return $date->friendlyDate($type, $alt);
 }
 
@@ -150,8 +157,9 @@ function friendly_date($sTime, $type = 'mohu', $alt = 'false') {
  * @return string 完整的时间显示
  * @author jry <598821125@qq.com>
  */
-function time_format($time = NULL, $format='Y-m-d H:i') {
-    $time = $time === NULL ? time() : intval($time);
+function time_format($time = null, $format = 'Y-m-d H:i')
+{
+    $time = $time === null ? time() : intval($time);
     return date($format, $time);
 }
 
@@ -159,9 +167,10 @@ function time_format($time = NULL, $format='Y-m-d H:i') {
  * 判断是否日期时间
  * @return string
  */
-function check_date_time($str_time, $format="Y-m-d H:i:s") {
-    $unix_time = strtotime($str_time);
-    $check_date= date($format, $unix_time);
+function check_date_time($str_time, $format = "Y-m-d H:i:s")
+{
+    $unix_time  = strtotime($str_time);
+    $check_date = date($format, $unix_time);
     if ($check_date == $str_time) {
         return true;
     } else {
@@ -176,9 +185,13 @@ function check_date_time($str_time, $format="Y-m-d H:i:s") {
  * @return string            格式化后的带单位的大小
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
-function format_bytes($size, $delimiter = '') {
+function format_bytes($size, $delimiter = '')
+{
     $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-    for ($i = 0; $size >= 1024 && $i < 5; $i++) $size /= 1024;
+    for ($i = 0; $size >= 1024 && $i < 5; $i++) {
+        $size /= 1024;
+    }
+
     return round($size, 2) . $delimiter . $units[$i];
 }
 
@@ -188,9 +201,10 @@ function format_bytes($size, $delimiter = '') {
  * @return string
  * @author jry <598821125@qq.com>
  */
-function user_md5($str, $auth_key) {
+function user_md5($str, $auth_key)
+{
     if (!$auth_key) {
-        $auth_key = C('AUTH_KEY') ? : 'OpenCMF';
+        $auth_key = C('AUTH_KEY') ?: 'OpenCMF';
     }
     return '' === $str ? '' : md5(sha1($str) . $auth_key);
 }
@@ -200,7 +214,8 @@ function user_md5($str, $auth_key) {
  * @return integer 0-未登录，大于0-当前登录用户ID
  * @author jry <598821125@qq.com>
  */
-function is_login() {
+function is_login()
+{
     return D('Admin/User')->is_login();
 }
 
@@ -209,7 +224,8 @@ function is_login() {
  * @return integer VIP等级
  * @author jry <598821125@qq.com>
  */
-function is_vip($uid) {
+function is_vip($uid)
+{
     if (D('Admin/Module')->where('name="Vip" and status="1"')->count()) {
         $uid = $uid ? $uid : is_login();
         return D('Vip/Index')->is_vip($uid);
@@ -224,11 +240,12 @@ function is_vip($uid) {
  * @return array  用户信息
  * @author jry <598821125@qq.com>
  */
-function get_user_info($id, $field) {
+function get_user_info($id, $field)
+{
     if (D('Admin/Module')->where('name="User" and status="1"')->count()) {
-        $user_onject= D('User/User');
+        $user_onject = D('User/User');
     } else {
-        $user_onject= D('Admin/User');
+        $user_onject = D('Admin/User');
     }
     $userinfo = $user_onject->find($id);
     if (!$field) {
@@ -247,18 +264,19 @@ function get_user_info($id, $field) {
  * @return string
  * @author jry <598821125@qq.com>
  */
-function get_cover($id, $type) {
-    if ((int)$id) {
+function get_cover($id, $type)
+{
+    if ((int) $id) {
         $upload_info = D('Admin/Upload')->find($id);
-        $url = $upload_info['real_path'];
+        $url         = $upload_info['real_path'];
     }
     if (!$url) {
         switch ($type) {
-            case 'default' : //默认图片
-                $url = C('TMPL_PARSE_STRING.__HOME_IMG__').'/default/default.gif';
+            case 'default': //默认图片
+                $url = C('TMPL_PARSE_STRING.__HOME_IMG__') . '/default/default.gif';
                 break;
-            case 'avatar' : //用户头像
-                $url = C('TMPL_PARSE_STRING.__HOME_IMG__').'/default/avatar.png';
+            case 'avatar': //用户头像
+                $url = C('TMPL_PARSE_STRING.__HOME_IMG__') . '/default/avatar.png';
                 break;
             default: //文档列表默认图片
                 break;
@@ -273,7 +291,8 @@ function get_cover($id, $type) {
  * @return string
  * @author jry <598821125@qq.com>
  */
-function get_upload_info($id, $field) {
+function get_upload_info($id, $field)
+{
     $upload_info = D('Admin/Upload')->where('status = 1')->find($id);
     if ($field) {
         if (!$upload_info[$field]) {
@@ -290,8 +309,9 @@ function get_upload_info($id, $field) {
  * @return bool
  * @author jry <598821125@qq.com>
  */
-function is_weixin() {
-    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false ) {
+function is_weixin()
+{
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
         return true;
     } else {
         return false;
@@ -303,19 +323,20 @@ function is_weixin() {
  * @return bool
  * @author jry <598821125@qq.com>
  */
-function is_wap() {
+function is_wap()
+{
     // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
-    if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])) {
+    if (isset($_SERVER['HTTP_X_WAP_PROFILE'])) {
         return true;
     }
     // 如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
-    if (isset ($_SERVER['HTTP_VIA'])) {
+    if (isset($_SERVER['HTTP_VIA'])) {
         // 找不到为flase,否则为true
         return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false;
     }
     // 脑残法，判断手机发送的客户端标志,兼容性有待提高
-    if (isset ($_SERVER['HTTP_USER_AGENT'])) {
-        $clientkeywords = array ('nokia',
+    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+        $clientkeywords = array('nokia',
             'sony',
             'ericsson',
             'mot',
@@ -346,7 +367,7 @@ function is_wap() {
             'cldc',
             'midp',
             'wap',
-            'mobile'
+            'mobile',
         );
         // 从HTTP_USER_AGENT中查找手机浏览器的关键字
         if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))) {
@@ -354,7 +375,7 @@ function is_wap() {
         }
     }
     // 协议法，因为有可能不准确，放到最后判断
-    if (isset ($_SERVER['HTTP_ACCEPT'])) {
+    if (isset($_SERVER['HTTP_ACCEPT'])) {
         // 如果只支持wml并且不支持html那一定是移动设备
         // 如果支持wml和html但是wml在html之前则是移动设备
         if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))) {
@@ -368,8 +389,9 @@ function is_wap() {
  * 生成订单号
  * 可根据自身的业务需求更改
  */
-function create_out_trade_no() {
+function create_out_trade_no()
+{
     $year_code = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J');
-    return 'CT'.$year_code[intval(date('Y')) - 2010] .strtoupper(dechex(date('m'))) .
-        date('d') .substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('d', rand(0, 99));
+    return 'CT' . $year_code[intval(date('Y')) - 2010] . strtoupper(dechex(date('m'))) .
+    date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('d', rand(0, 99));
 }

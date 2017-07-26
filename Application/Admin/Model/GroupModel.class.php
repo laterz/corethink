@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Admin\Model;
+
 use Think\Model;
+
 /**
  * 部门模型
  * @author jry <598821125@qq.com>
  */
-class GroupModel extends Model {
+class GroupModel extends Model
+{
     /**
      * 数据库表名
      * @author jry <598821125@qq.com>
@@ -44,9 +47,10 @@ class GroupModel extends Model {
      * 检查部门功能权限
      * @author jry <598821125@qq.com>
      */
-    public function checkMenuAuth() {
+    public function checkMenuAuth()
+    {
         $current_menu = D('Admin/Module')->getCurrentMenu(); // 当前菜单
-        $user_group = D('Admin/Access')->getFieldByUid(session('user_auth.uid'), 'group');  // 获得当前登录用户信息
+        $user_group   = D('Admin/Access')->getFieldByUid(session('user_auth.uid'), 'group'); // 获得当前登录用户信息
         if ($user_group !== '1') {
             $group_info = $this->find($user_group);
             // 获得当前登录用户所属部门的权限列表
@@ -55,7 +59,7 @@ class GroupModel extends Model {
                 return true;
             }
         } else {
-            return true;  // 超级管理员无需验证
+            return true; // 超级管理员无需验证
         }
         return false;
     }

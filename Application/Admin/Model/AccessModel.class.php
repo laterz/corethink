@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Admin\Model;
+
 use Think\Model;
+
 /**
  * 管理员与用户组对应关系模型
  * @author jry <598821125@qq.com>
  */
-class AccessModel extends Model {
+class AccessModel extends Model
+{
     /**
      * 数据库表名
      * @author jry <598821125@qq.com>
@@ -44,9 +47,10 @@ class AccessModel extends Model {
      * 检查用户是否存在
      * @author jry <598821125@qq.com>
      */
-    protected function checkUser($uid){
+    protected function checkUser($uid)
+    {
         $user_info = D('User')->find($uid);
-        if($user_info){
+        if ($user_info) {
             return true;
         }
         return false;

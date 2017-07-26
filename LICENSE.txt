@@ -1,6 +1,6 @@
 
 CoreThink遵循Apache2开源协议发布，并提供免费使用。
-版权所有Copyright © 2014-2015 by CoreThink (http://www.corethink.cn)
+版权所有Copyright © 2014-2015 by CoreThink (http://www.lingyun.net)
 All rights reserved。
 CoreThink® 商标和著作权所有者为南京科斯克网络科技有限公司。
 

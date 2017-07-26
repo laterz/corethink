@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace User\Model;
+
 use Think\Model;
+
 /**
  * 用户模型
  * @author jry <598821125@qq.com>
  */
-class UserModel extends Model {
+class UserModel extends Model
+{
     /**
      * 数据库表名
      * @author jry <598821125@qq.com>
@@ -74,7 +77,8 @@ class UserModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_find(&$result, $options) {
+    protected function _after_find(&$result, $options)
+    {
         $result['avatar_url'] = get_cover($result['avatar'], 'avatar');
     }
 
@@ -82,8 +86,9 @@ class UserModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_select(&$result, $options) {
-        foreach($result as &$record){
+    protected function _after_select(&$result, $options)
+    {
+        foreach ($result as &$record) {
             $this->_after_find($record, $options);
         }
     }
@@ -92,7 +97,8 @@ class UserModel extends Model {
      * 用户性别
      * @author jry <598821125@qq.com>
      */
-    public function user_gender($id) {
+    public function user_gender($id)
+    {
         $list[0]  = '保密';
         $list[1]  = '男';
         $list[-1] = '女';
@@ -103,7 +109,8 @@ class UserModel extends Model {
      * 用户性别图标
      * @author jry <598821125@qq.com>
      */
-    public function user_gender_icon($id) {
+    public function user_gender_icon($id)
+    {
         $list[0]  = '<i class="fa fa-genderless"></i>';
         $list[1]  = '<i class="fa fa-mars text-primary color-blue"></i>';
         $list[-1] = '<i class="fa fa-venus text-danger color-pink"></i>';
@@ -115,11 +122,12 @@ class UserModel extends Model {
      * @param  string $username 用户名
      * @return boolean ture 未禁用，false 禁止注册
      */
-    protected function checkDenyMember($username){
+    protected function checkDenyMember($username)
+    {
         $deny = C('user_config.deny_username');
-        $deny = explode ( ',', $deny);
-        foreach ($deny as $k=>$v) {
-            if(stristr($username, $v)){
+        $deny = explode(',', $deny);
+        foreach ($deny as $k => $v) {
+            if (stristr($username, $v)) {
                 return false;
             }
         }
@@ -130,7 +138,8 @@ class UserModel extends Model {
      * 用户登录
      * @author jry <598821125@qq.com>
      */
-    public function login($account, $password, $return = false) {
+    public function login($account, $password, $return = false)
+    {
         if (is_login()) {
             $this->error = '已登录！';
             return false;
@@ -141,17 +150,17 @@ class UserModel extends Model {
 
         //匹配登录方式
         if (preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $account)) {
-            $map['email'] = array('eq', $account);     // 邮箱登陆
+            $map['email']      = array('eq', $account); // 邮箱登陆
             $map['email_bind'] = array('eq', 1);
         } elseif (preg_match("/^1\d{10}$/", $account)) {
-            $map['mobile'] = array('eq', $account);    // 手机号登陆
+            $map['mobile']      = array('eq', $account); // 手机号登陆
             $map['mobile_bind'] = array('eq', 1);
         } else {
-            $map['username'] = array('eq', $account);  // 用户名登陆
+            $map['username'] = array('eq', $account); // 用户名登陆
         }
 
-        $map['status']   = array('eq', 1);
-        $user_info = $this->where($map)->find(); //查找用户
+        $map['status'] = array('eq', 1);
+        $user_info     = $this->where($map)->find(); //查找用户
         if (!$user_info) {
             $this->error = '用户不存在或被禁用！';
         } else {
@@ -174,12 +183,13 @@ class UserModel extends Model {
      * 设置登录状态
      * @author jry <598821125@qq.com>
      */
-    public function auto_login($user) {
+    public function auto_login($user)
+    {
         // VIP信息
         if (is_dir('./Application/Vip/')) {
             $con['status'] = 1;
-            $con['id'] = is_vip($user['id']);
-            $vip = D('Vip/Index')->where($con)->find();
+            $con['id']     = is_vip($user['id']);
+            $vip           = D('Vip/Index')->where($con)->find();
         }
 
         // 记录登录SESSION和COOKIES
@@ -200,7 +210,8 @@ class UserModel extends Model {
      * 密码认证
      * @author jry <598821125@qq.com>
      */
-    public function password_auth($password) {
+    public function password_auth($password)
+    {
         $user_info = $this->find(is_login());
         if ($user_info) {
             if ($user_info['password'] === user_md5($password)) {
@@ -214,7 +225,8 @@ class UserModel extends Model {
      * 注销
      * @author jry <598821125@qq.com>
      */
-    public function logout() {
+    public function logout()
+    {
         session('user_auth', null);
         session('user_auth_sign', null);
         return true;
@@ -226,14 +238,15 @@ class UserModel extends Model {
      * @return string       签名
      * @author jry <598821125@qq.com>
      */
-    public function data_auth_sign($data) {
+    public function data_auth_sign($data)
+    {
         // 数据类型检测
         if (!is_array($data)) {
-            $data = (array)$data;
+            $data = (array) $data;
         }
         ksort($data); //排序
         $code = http_build_query($data); // url编码并生成query字符串
-        $sign = sha1($code);  // 生成签名
+        $sign = sha1($code); // 生成签名
         return $sign;
     }
 
@@ -241,10 +254,11 @@ class UserModel extends Model {
      * 获取用户详情
      * @author jry <598821125@qq.com>
      */
-    public function detail($id) {
+    public function detail($id)
+    {
         //获取基础表信息
         $user_info = $this->find($id);
-        if(!(is_array($user_info) || 1 !== $user_info['status'])){
+        if (!(is_array($user_info) || 1 !== $user_info['status'])) {
             $this->error = '用户被禁用或已删除！';
             return false;
         }
@@ -252,11 +266,11 @@ class UserModel extends Model {
         //根据文档模型获取扩展表的息
         $user_type_name = D('User/Type')->where(array('id' => $user_info['user_type']))->getField('name');
         if ($user_type_name) {
-            $user_extend_object = D('User/User'.ucfirst($user_type_name));
-            $extend_data = $user_extend_object->where(array('uid' => $id))->find();
+            $user_extend_object = D('User/User' . ucfirst($user_type_name));
+            $extend_data        = $user_extend_object->where(array('uid' => $id))->find();
 
             //基础信息与扩展信息合并
-            if(is_array($extend_data)){
+            if (is_array($extend_data)) {
                 $user_info = array_merge($user_info, $extend_data);
             }
         }

@@ -2,24 +2,28 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace User\Controller;
+
 use Home\Controller\HomeController;
+
 /**
  * 用户控制器
  * @author jry <598821125@qq.com>
  */
-class UserController extends HomeController {
+class UserController extends HomeController
+{
     /**
      * 登陆
      * @author jry <598821125@qq.com>
      */
-    public function login() {
+    public function login()
+    {
         if (IS_POST) {
-            $account = I('username');
+            $account  = I('username');
             $password = I('password');
             if (!$account) {
                 $this->error('请输入账号！');
@@ -28,15 +32,15 @@ class UserController extends HomeController {
                 $this->error('请输入密码！');
             }
             $user_object = D('User/User');
-            $uid = $user_object->login($account, $password);
+            $uid         = $user_object->login($account, $password);
             if ($uid) {
-                $this->success('登录成功！', Cookie('__forward__') ? : C('HOME_PAGE'), array('data' => D('User/User')->detail($uid)));
+                $this->success('登录成功！', Cookie('__forward__') ?: C('HOME_PAGE'), array('data' => D('User/User')->detail($uid)));
             } else {
                 $this->error($user_object->getError());
             }
         } else {
             if (is_login()) {
-                $this->error("您已登陆系统", Cookie('__forward__') ? : C('HOME_PAGE'));
+                $this->error("您已登陆系统", Cookie('__forward__') ?: C('HOME_PAGE'));
             }
             $this->assign('meta_title', '用户登录');
             $this->display();
@@ -47,17 +51,19 @@ class UserController extends HomeController {
      * 注销
      * @author jry <598821125@qq.com>
      */
-    public function logout() {
+    public function logout()
+    {
         session('user_auth', null);
         session('user_auth_sign', null);
-        $this->success('退出成功！', Cookie('__forward__') ? : C('HOME_PAGE'));
+        $this->success('退出成功！', Cookie('__forward__') ?: C('HOME_PAGE'));
     }
 
     /**
      * 用户注册
      * @author jry <598821125@qq.com>
      */
-    public function register() {
+    public function register()
+    {
         if (IS_POST) {
             if (!C('user_config.reg_toggle')) {
                 $this->error('注册已关闭！');
@@ -85,8 +91,8 @@ class UserController extends HomeController {
                     if (user_md5(I('post.verify'), I('post.email')) !== session('reg_verify')) {
                         $this->error('验证码错误！');
                     }
-                    $_POST['username'] = I('post.username') ? I('post.username') : 'U'.time();
-                    $reg_data['email'] = I('post.email');
+                    $_POST['username']      = I('post.username') ? I('post.username') : 'U' . time();
+                    $reg_data['email']      = I('post.email');
                     $reg_data['email_bind'] = 1;
                     if (I('post.mobile')) {
                         $reg_data['mobile'] = I('post.mobile');
@@ -97,8 +103,8 @@ class UserController extends HomeController {
                     if (user_md5(I('post.verify'), I('post.mobile')) !== session('reg_verify')) {
                         $this->error('验证码错误！');
                     }
-                    $_POST['username'] = I('post.username') ? I('post.username') : 'U'.time();
-                    $reg_data['mobile'] = I('post.mobile');
+                    $_POST['username']       = I('post.username') ? I('post.username') : 'U' . time();
+                    $reg_data['mobile']      = I('post.mobile');
                     $reg_data['mobile_bind'] = 1;
                     if (I('post.email')) {
                         $reg_data['email'] = I('post.email');
@@ -114,9 +120,9 @@ class UserController extends HomeController {
             if ($_POST['repassword']) {
                 $reg_data['repassword'] = $_POST['repassword'];
             }
-            $reg_data['reg_type']  = I('post.reg_type');
-            $user_object = D('User/User');
-            $data = $user_object->create($reg_data);
+            $reg_data['reg_type'] = I('post.reg_type');
+            $user_object          = D('User/User');
+            $data                 = $user_object->create($reg_data);
             if ($data) {
                 $id = $user_object->add($data);
                 if ($id) {
@@ -124,16 +130,16 @@ class UserController extends HomeController {
                     $user_info = $user_object->login($data['username'], I('post.password'), true);
 
                     // 构造消息数据
-                    $msg_data['to_uid'] = $user_info['id'];
-                    $msg_data['title']  = '注册成功';
+                    $msg_data['to_uid']  = $user_info['id'];
+                    $msg_data['title']   = '注册成功';
                     $msg_data['content'] = '少侠/女侠好：<br>'
-                                           .'恭喜您成功注册'.C('WEB_SITE_TITLE').'的帐号<br>'
-                                           .'您的帐号信息如下（请妥善保管）：<br>'
-                                           .'UID：'.$user_info['id'].'<br>'
-                                           .'昵称：'.$user_info['nickname'].'<br>'
-                                           .'用户名：'.$user_info['username'].'<br>'
-                                           .'密码：'.$_POST['password'].'<br>'
-                                           .'<br>';
+                    . '恭喜您成功注册' . C('WEB_SITE_TITLE') . '的帐号<br>'
+                        . '您的帐号信息如下（请妥善保管）：<br>'
+                        . 'UID：' . $user_info['id'] . '<br>'
+                        . '昵称：' . $user_info['nickname'] . '<br>'
+                        . '用户名：' . $user_info['username'] . '<br>'
+                        . '密码：' . $_POST['password'] . '<br>'
+                        . '<br>';
                     D('User/Message')->sendMessage($msg_data);
                     if (is_wap()) {
                         $url = U('User/Center/index');
@@ -142,14 +148,14 @@ class UserController extends HomeController {
                     }
                     $this->success('注册成功', $url);
                 } else {
-                    $this->error('注册失败'.$user_object->getError());
+                    $this->error('注册失败' . $user_object->getError());
                 }
             } else {
-                $this->error('注册失败'.$user_object->getError());
+                $this->error('注册失败' . $user_object->getError());
             }
         } else {
             if (is_login()) {
-                $this->error("您已登陆系统", Cookie('__forward__') ? : C('HOME_PAGE'));
+                $this->error("您已登陆系统", Cookie('__forward__') ?: C('HOME_PAGE'));
             }
             $this->assign('meta_title', '用户注册');
             $this->display();
@@ -160,8 +166,9 @@ class UserController extends HomeController {
      * 用户注册2
      * @author jry <598821125@qq.com>
      */
-    public function register2() {
-        $uid  = $this->is_login();
+    public function register2()
+    {
+        $uid = $this->is_login();
         if (IS_POST) {
             if ($_POST) {
                 if (!$_POST['avatar']['src'] || !$_POST['avatar']['w'] || !$_POST['avatar']['h'] || $_POST['avatar']['x'] === '' || $_POST['avatar']['y'] === '') {
@@ -170,11 +177,11 @@ class UserController extends HomeController {
                 $result = D('Admin/Upload')->crop($_POST['avatar']);
                 if ($result['error'] != 1) {
                     $user_object = D('User/User');
-                    $result = $user_object->where(array('id' => $uid))->setField('avatar', $result['id']);
+                    $result      = $user_object->where(array('id' => $uid))->setField('avatar', $result['id']);
                     if ($result) {
                         $this->success('头像设置成功', U('register3'));
                     } else {
-                        $this->error('头像设置失败'.$user_object->getError());
+                        $this->error('头像设置失败' . $user_object->getError());
                     }
                 } else {
                     $this->error('头像保存失败');
@@ -193,35 +200,36 @@ class UserController extends HomeController {
      * 用户注册3
      * @author jry <598821125@qq.com>
      */
-    public function register3() {
+    public function register3()
+    {
         if (IS_POST) {
             // 强制设置用户ID
-            $uid = $this->is_login();
+            $uid          = $this->is_login();
             $_POST['uid'] = $uid;
-            $_POST = format_data();
+            $_POST        = format_data();
 
             // 获取用户信息
             $user_object = D('User/User');
-            $user_info = $user_object->find($uid);
+            $user_info   = $user_object->find($uid);
 
             // 保存昵称
             if (I('post.nickname')) {
                 $result = $user_object->where(array('id' => $uid))->setField('nickname', I('post.nickname'));
                 if ($result === false) {
-                    $this->error('昵称修改失败'.$user_object->getError());
+                    $this->error('昵称修改失败' . $user_object->getError());
                 }
             } else {
                 $this->error('请填写昵称');
             }
 
             // 保存扩展信息
-            $type = $user_info['user_type'];
+            $type             = $user_info['user_type'];
             $map['user_type'] = array('eq', $type);
-            $count = D('User/Attribute')->where($map)->count();
+            $count            = D('User/Attribute')->where($map)->count();
             if ($count) {
-                $user_type_name = D('User/Type')->where(array('id' => $user_info['user_type']))->getField('name');
-                $user_extend_object = D('User'.ucfirst($user_type_name));
-                $extend_data = $user_extend_object->create();
+                $user_type_name     = D('User/Type')->where(array('id' => $user_info['user_type']))->getField('name');
+                $user_extend_object = D('User' . ucfirst($user_type_name));
+                $extend_data        = $user_extend_object->create();
                 if (!$extend_data) {
                     $this->error($user_extend_object->getError());
                 }
@@ -232,47 +240,47 @@ class UserController extends HomeController {
                     $result = $user_extend_object->add($extend_data);
                 }
                 if ($result === false) {
-                    $this->error('扩展信息修改失败'.$user_extend_object->getError());
+                    $this->error('扩展信息修改失败' . $user_extend_object->getError());
                 } else {
                     $this->success('信息修改成功', U('User/Center/profile'));
                 }
             }
         } else {
             // 获取当前用户
-            $user_object = D('User/User');
-            $user_info = $user_object->detail($this->is_login());
-            $type = $user_info['user_type'];
+            $user_object    = D('User/User');
+            $user_info      = $user_object->detail($this->is_login());
+            $type           = $user_info['user_type'];
             $user_type_info = D('User/Type')->find($type);
 
             // 获取扩展字段
-            $map['user_type'] = array('eq', $type);
+            $map['user_type']      = array('eq', $type);
             $attribute_list[$type] = D('User/Attribute')->where($map)->select();
 
             // 解析字段options
             $new_attribute_list_sort['user']['type'] = 'group';
             if ($attribute_list[$type]) {
                 // 增加昵称表单
-                $nick['name']  = 'nickname';
-                $nick['title'] = '昵称';
-                $nick['type']  = 'text';
-                $nick['value']  = $user_info['nickname'];
+                $nick['name']             = 'nickname';
+                $nick['title']            = '昵称';
+                $nick['type']             = 'text';
+                $nick['value']            = $user_info['nickname'];
                 $new_attribute_list[1][0] = $nick;
                 foreach ($attribute_list[$type] as $attr) {
-                    $attr['options'] = parse_attr($attr['options']);
-                    $new_attribute_list[$type][$attr['id']] = $attr;
+                    $attr['options']                                 = parse_attr($attr['options']);
+                    $new_attribute_list[$type][$attr['id']]          = $attr;
                     $new_attribute_list[$type][$attr['id']]['value'] = $user_info[$attr['name']];
                 }
-                $new_attribute_list_sort['user']['options']['group_extend']['title'] = '完善'.$user_type_info['title'].'信息';
+                $new_attribute_list_sort['user']['options']['group_extend']['title']   = '完善' . $user_type_info['title'] . '信息';
                 $new_attribute_list_sort['user']['options']['group_extend']['options'] = $new_attribute_list[$type];
             }
 
             // 使用FormBuilder快速建立表单页面。
             $builder = new \Common\Builder\FormBuilder();
-            $builder->setMetaTitle('完善信息')  // 设置页面标题
-                    ->setPostUrl(U(''))        // 设置表单提交地址
-                    ->setExtraItems($new_attribute_list_sort)
-                    ->setTemplate('User/register3')
-                    ->display();
+            $builder->setMetaTitle('完善信息') // 设置页面标题
+                ->setPostUrl(U('')) // 设置表单提交地址
+                ->setExtraItems($new_attribute_list_sort)
+                ->setTemplate('User/register3')
+                ->display();
         }
     }
 
@@ -280,21 +288,22 @@ class UserController extends HomeController {
      * 密码重置
      * @author jry <598821125@qq.com>
      */
-    public function resetPassword() {
+    public function resetPassword()
+    {
         if (IS_POST) {
             $reg_type = I('post.reg_type');
             switch ($reg_type) {
                 case 'email':
-                    $username = I('post.email');
-                    $condition['email'] = I('post.email');
+                    $username                = I('post.email');
+                    $condition['email']      = I('post.email');
                     $condition['email_bind'] = 1;
-                    $condition['status'] = 1;
+                    $condition['status']     = 1;
                     break;
                 case 'mobile':
-                    $username = I('post.mobile');
-                    $condition['mobile'] = I('post.mobile');
+                    $username                 = I('post.mobile');
+                    $condition['mobile']      = I('post.mobile');
                     $condition['mobile_bind'] = 1;
-                    $condition['status'] = 1;
+                    $condition['status']      = 1;
                     break;
             }
 
@@ -303,13 +312,13 @@ class UserController extends HomeController {
                 $this->error('验证码错误！');
             }
 
-            $validate = array (
+            $validate = array(
                 array('password', '6,30', '密码长度为6-30位', 1, 'length'),
                 array('password', '/(?!^(\d+|[a-zA-Z]+|[~!@#$%^&*()_+{}:"<>?\-=[\];\',.\/]+)$)^[\w~!@#$%^&*()_+{}:"<>?\-=[\];\',.\/]+$/', '密码至少由数字、字符、特殊字符三种中的两种组成', 1, 'regex'),
             );
             $user_object = D('User/User');
             $user_object->setProperty("_validate", $validate);
-            $data = $user_object->create($_POST);  //调用自动验证
+            $data = $user_object->create($_POST); //调用自动验证
             if (!$data) {
                 $this->error($user_object->getError());
             }
@@ -321,26 +330,26 @@ class UserController extends HomeController {
             }
 
             $result = $user_object
-                    ->where($condition)
-                    ->setField('password', $data['password']);  //重置密码
+                ->where($condition)
+                ->setField('password', $data['password']); //重置密码
             if (!$result) {
-                $this->error('密码重置失败'.$user_object->getError());
+                $this->error('密码重置失败' . $user_object->getError());
             }
-            $user_info = $user_object->login($username, I('post.password'), true);  //自动登录
+            $user_info = $user_object->login($username, I('post.password'), true); //自动登录
 
             // 发送消息
             if ($user_info) {
                 // 构造消息数据
-                $msg_data['to_uid'] = $user_info['id'];
-                $msg_data['title']  = '密码重置成功';
+                $msg_data['to_uid']  = $user_info['id'];
+                $msg_data['title']   = '密码重置成功';
                 $msg_data['content'] = '少侠/女侠好：<br>'
-                                      .'恭喜您成功重置您在'.C('WEB_SITE_TITLE').'的帐号密码<br>'
-                                      .'您的帐号信息如下（请妥善保管）：<br>'
-                                      .'UID：'.$user_info['id'].'<br>'
-                                      .'昵称：'.$user_info['nickname'].'<br>'
-                                      .'用户名：'.$user_info['username'].'<br>'
-                                      .'密码：'.$_POST['password'].'<br>'
-                                      .'<br>';
+                . '恭喜您成功重置您在' . C('WEB_SITE_TITLE') . '的帐号密码<br>'
+                    . '您的帐号信息如下（请妥善保管）：<br>'
+                    . 'UID：' . $user_info['id'] . '<br>'
+                    . '昵称：' . $user_info['nickname'] . '<br>'
+                    . '用户名：' . $user_info['username'] . '<br>'
+                    . '密码：' . $_POST['password'] . '<br>'
+                    . '<br>';
                 D('User/Message')->sendMessage($msg_data);
                 $this->success('密码重置成功', C('HOME_PAGE'));
             } else {
@@ -356,8 +365,9 @@ class UserController extends HomeController {
      * 图片验证码生成，用于登录和注册
      * @author jry <598821125@qq.com>
      */
-    public function verify($vid = 1) {
-        $verify = new \Think\Verify();
+    public function verify($vid = 1)
+    {
+        $verify         = new \Think\Verify();
         $verify->length = 4;
         $verify->entry($vid);
     }
@@ -367,7 +377,8 @@ class UserController extends HomeController {
      * @param  integer $id 验证码ID
      * @return boolean 检测结果
      */
-    function check_verify($code, $vid = 1) {
+    public function check_verify($code, $vid = 1)
+    {
         $verify = new \Think\Verify();
         return $verify->check($code, $vid);
     }
@@ -376,20 +387,21 @@ class UserController extends HomeController {
      * 邮箱验证码，用于注册
      * @author jry <598821125@qq.com>
      */
-    public function sendMailVerify(){
-        if((time()-session('limit_time')) < 30){
+    public function sendMailVerify()
+    {
+        if ((time() - session('limit_time')) < 30) {
             $this->error('30秒内不能重复发送');
         }
 
         // 生成验证码
-        $reg_verify = \Org\Util\String::randString(6,1);
+        $reg_verify = \Org\Util\String::randString(6, 1);
         session('reg_verify', user_md5($reg_verify, I('post.email')));
 
         // 构造邮件数据
         $mail_data['receiver'] = I('post.email');
-        $mail_data['title']  = '邮箱验证';
-        $mail_data['content'] = '少侠/女侠好：<br>听闻您正使用该邮箱'.I('post.email').'【注册/修改密码】，请在验证码输入框中输入：
-        <span style="color:red;font-weight:bold;">'.$reg_verify.'</span>，以完成操作。<br>
+        $mail_data['title']    = '邮箱验证';
+        $mail_data['content']  = '少侠/女侠好：<br>听闻您正使用该邮箱' . I('post.email') . '【注册/修改密码】，请在验证码输入框中输入：
+        <span style="color:red;font-weight:bold;">' . $reg_verify . '</span>，以完成操作。<br>
         注意：此操作可能会修改您的密码、登录邮箱或绑定手机。如非本人操作，请及时登录并修改
         密码以保证帐户安全 （工作人员不会向您索取此验证码，请勿泄漏！)';
         $result = D('Addons://Email/Email')->send($mail_data);
@@ -407,18 +419,19 @@ class UserController extends HomeController {
      * 短信验证码，用于注册
      * @author jry <598821125@qq.com>
      */
-    public function sendMobileVerify() {
-        if((time()-session('limit_time')) < 30){
+    public function sendMobileVerify()
+    {
+        if ((time() - session('limit_time')) < 30) {
             $this->error('30秒内不能重复发送');
         }
 
         // 生成验证码
-        $reg_verify = \Org\Util\String::randString(6,1);
+        $reg_verify = \Org\Util\String::randString(6, 1);
         session('reg_verify', user_md5($reg_verify, I('post.mobile')));
 
         // 构造短信数据
-        $sms_data['RecNum'] = I('post.mobile');
-        $sms_data['code']   = $reg_verify;
+        $sms_data['RecNum']          = I('post.mobile');
+        $sms_data['code']            = $reg_verify;
         $sms_data['SmsFreeSignName'] = '注册验证';
         //$sms_data['SmsTemplateCode'] = '';
         $result = D('Addons://Alidayu/Alidayu')->send($sms_data);

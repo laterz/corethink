@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace User\Model;
+
 use Think\Model;
+
 /**
  * 消息模型
  * @author jry <598821125@qq.com>
  */
-class MessageModel extends Model {
+class MessageModel extends Model
+{
     /**
      * 数据库表名
      * @author jry <598821125@qq.com>
@@ -24,9 +27,9 @@ class MessageModel extends Model {
      * @author jry <598821125@qq.com>
      */
     protected $_validate = array(
-        array('title','require','消息必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('title', 'require', '消息必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
         array('title', '1,1024', '消息长度为1-32个字符', self::EXISTS_VALIDATE, 'length', self::MODEL_BOTH),
-        array('to_uid','require','收信人必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('to_uid', 'require', '收信人必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
     );
 
     /**
@@ -45,7 +48,8 @@ class MessageModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_find(&$result, $options) {
+    protected function _after_find(&$result, $options)
+    {
         $result['title'] = strip_tags($result['title']);
     }
 
@@ -53,8 +57,9 @@ class MessageModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_select(&$result, $options) {
-        foreach($result as &$record){
+    protected function _after_select(&$result, $options)
+    {
+        foreach ($result as &$record) {
             $this->_after_find($record, $options);
         }
     }
@@ -63,7 +68,8 @@ class MessageModel extends Model {
      * 消息类型
      * @author jry <598821125@qq.com>
      */
-    public function message_type($id) {
+    public function message_type($id)
+    {
         $list[0] = '系统消息';
         $list[1] = '评论消息';
         return $id ? $list[$id] : $list;
@@ -73,14 +79,15 @@ class MessageModel extends Model {
      * 发送消息
      * @author jry <598821125@qq.com>
      */
-    public function sendMessage($send_data, $email = true, $weixin = true) {
+    public function sendMessage($send_data, $email = true, $weixin = true)
+    {
         $msg_data['title']    = $send_data['title']; //消息标题
-        $msg_data['content']  = $send_data['content'] ? : $send_data['title']; //消息内容
+        $msg_data['content']  = $send_data['content'] ?: $send_data['title']; //消息内容
         $msg_data['to_uid']   = $send_data['to_uid']; //消息收信人ID
-        $msg_data['type']     = $send_data['type'] ? : 0; //消息类型
-        $msg_data['from_uid'] = $send_data['from_uid'] ? : 0; //消息发信人
-        $data = $this->create($msg_data);
-        if($data){
+        $msg_data['type']     = $send_data['type'] ?: 0; //消息类型
+        $msg_data['from_uid'] = $send_data['from_uid'] ?: 0; //消息发信人
+        $data                 = $this->create($msg_data);
+        if ($data) {
             $result = $this->add($data);
             if ($result) {
                 $data['id'] = $result;
@@ -89,9 +96,11 @@ class MessageModel extends Model {
                 hook('SendMessage', $data); //发送消息钩子，用于消息发送途径的扩展
             }
             if ($weixin) {
-                $data['from_username'] = get_user_info($data['from_uid'], 'nickname');
-                $data['to_openid']     = D('Weixin/UserBind')->getFieldByUid($data['to_uid'], 'openid');
-                D('Weixin/Index')->SendMessage($data);
+                if (D('Admin/Module')->where('name="Weixin" and status="1"')->count()) {
+                    $data['from_username'] = get_user_info($data['from_uid'], 'nickname');
+                    $data['to_openid']     = D('Weixin/UserBind')->getFieldByUid($data['to_uid'], 'openid');
+                    D('Weixin/Index')->SendMessage($data);
+                }
             }
             return $result;
         }
@@ -102,11 +111,12 @@ class MessageModel extends Model {
      * @param $type 消息类型
      * @author jry <598821125@qq.com>
      */
-    public function newMessageCount($type = null) {
-        $map['status'] = array('eq', 1);
-        $map['to_uid'] = array('eq', is_login());
+    public function newMessageCount($type = null)
+    {
+        $map['status']  = array('eq', 1);
+        $map['to_uid']  = array('eq', is_login());
         $map['is_read'] = array('eq', 0);
-        if($type !== null){
+        if ($type !== null) {
             $map['type'] = array('eq', $type);
         }
         return $this->where($map)->count();

@@ -2,17 +2,20 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Cms\Model;
+
 use Think\Model;
+
 /**
  * 分类模型
  * @author jry <598821125@qq.com>
  */
-class CategoryModel extends Model {
+class CategoryModel extends Model
+{
     /**
      * 模块名称
      * @author jry <598821125@qq.com>
@@ -37,7 +40,7 @@ class CategoryModel extends Model {
         array('title', 'checkTitle', '名称已经存在', self::MUST_VALIDATE, 'callback', self::MODEL_INSERT),
         array('group', 'require', '分组不能为空', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
         array('doc_type', 'require', '内容模型不能为空', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('url', '0,255', '链接长度为0-25个字符', self::EXISTS_VALIDATE, 'length',self::MODEL_BOTH),
+        array('url', '0,255', '链接长度为0-25个字符', self::EXISTS_VALIDATE, 'length', self::MODEL_BOTH),
     );
 
     /**
@@ -54,16 +57,17 @@ class CategoryModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_find(&$result, $options) {
+    protected function _after_find(&$result, $options)
+    {
         $result['cover_url'] = get_cover($result['cover'], 'default');
-        $doc_type_info = $result['doc_type_info'] = D($this->moduleName.'Type')->find($result['doc_type']);  // 获取当前文档类型
+        $doc_type_info       = $result['doc_type_info']       = D($this->moduleName . 'Type')->find($result['doc_type']); // 获取当前文档类型
         if ($doc_type_info['name'] === 'page') {
             $result['href'] = U('Cms/Category/detail', array('id' => $result['id']));
         } else if ($doc_type_info['name'] === 'link') {
             if (!stristr($result['url'], 'http://') && !stristr($result['url'], 'https://')) {
                 $result['href'] = U($result['url']);
             } else {
-                $result['href'] = 'javascript:window.open(\''.$result['url'].'\')';
+                $result['href'] = 'javascript:window.open(\'' . $result['url'] . '\')';
             }
         } else if ($doc_type_info['system'] === '0') {
             $result['href'] = U('Cms/Index/lists', array('cid' => $result['id']));
@@ -74,8 +78,9 @@ class CategoryModel extends Model {
      * 查找后置操作
      * @author jry <598821125@qq.com>
      */
-    protected function _after_select(&$result, $options) {
-        foreach($result as &$record){
+    protected function _after_select(&$result, $options)
+    {
+        foreach ($result as &$record) {
             $this->_after_find($record, $options);
         }
     }
@@ -84,7 +89,8 @@ class CategoryModel extends Model {
      * 前台用户投稿权限(不影响后台)
      * @author jry <598821125@qq.com>
      */
-    public function post_auth($id) {
+    public function post_auth($id)
+    {
         $list[0] = '禁止投稿';
         $list[1] = '允许投稿';
         return $id ? $list[$id] : $list;
@@ -94,7 +100,8 @@ class CategoryModel extends Model {
      * 栏目分组
      * @author jry <598821125@qq.com>
      */
-    public function group_list() {
+    public function group_list()
+    {
         return parse_attr(C('cms_config.group_list'));
     }
 
@@ -102,10 +109,11 @@ class CategoryModel extends Model {
      * 检查同一分组下是否有相同的字段
      * @author jry <598821125@qq.com>
      */
-    protected function checkTitle() {
+    protected function checkTitle()
+    {
         $map['title'] = array('eq', I('post.title'));
         $map['group'] = array('eq', I('post.group'));
-        $result = $this->where($map)->find();
+        $result       = $this->where($map)->find();
         return empty($result);
     }
 
@@ -115,16 +123,17 @@ class CategoryModel extends Model {
      * @return array 参数分类和父类的信息集合
      * @author jry <598821125@qq.com>
      */
-    public function getParentCategory($cid, $group = 1) {
+    public function getParentCategory($cid, $group = 1)
+    {
         if (empty($cid)) {
             return false;
         }
-        $con['status'] = 1;
-        $con['group']  = $group;
-        $category_list = $this->where($con)->field('id,pid,group,title,url')->select();
+        $con['status']    = 1;
+        $con['group']     = $group;
+        $category_list    = $this->where($con)->field('id,pid,group,title,url')->select();
         $current_category = $this->field('id,pid,group,title,url')->find($cid); //获取当前分类的信息
-        $result[] = $current_category;
-        $pid = $current_category['pid'];
+        $result[]         = $current_category;
+        $pid              = $current_category['pid'];
         while (true) {
             foreach ($category_list as $key => $val) {
                 if ($val['id'] == $pid) {
@@ -132,7 +141,8 @@ class CategoryModel extends Model {
                     array_unshift($result, $val); //将父分类插入到数组第一个元素前
                 }
             }
-            if ($pid == 0 || count($result) == 1) { //已找到顶级分类或者没有任何父分类
+            if ($pid == 0 || count($result) == 1) {
+                //已找到顶级分类或者没有任何父分类
                 break;
             }
         }
@@ -146,9 +156,10 @@ class CategoryModel extends Model {
      * @return array          分类树
      * @author jry <598821125@qq.com>
      */
-    public function getCategoryTree($id = 0, $limit = null, $page =1, $group = 1, $field = true) {
+    public function getCategoryTree($id = 0, $limit = null, $page = 1, $group = 1, $field = true)
+    {
         //获取当前分类信息
-        if ((int)$id > 0) {
+        if ((int) $id > 0) {
             $info = $this->find($id);
             $id   = $info['id'];
         }
@@ -156,11 +167,11 @@ class CategoryModel extends Model {
         //获取所有分类
         $map['status'] = array('eq', 1);
         $map['group']  = array('eq', $id ? $info['group'] : $group);
-        $tree = new \Common\Util\Tree();
-        $list = $this->field($field)->where($map)->order('sort asc, id asc')->select();
+        $tree          = new \Common\Util\Tree();
+        $list          = $this->field($field)->where($map)->order('sort asc, id asc')->select();
 
         // 转换成树结构
-        $list = $tree->list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = (int)$id); //返回当前分类的子分类树
+        $list = $tree->list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = (int) $id); //返回当前分类的子分类树
         if ($limit) {
             $list = array_slice($list, 0, $limit);
         }
@@ -176,19 +187,20 @@ class CategoryModel extends Model {
      * @return array          分类树
      * @author jry <598821125@qq.com>
      */
-    public function getSameLevelCategoryTree($id = 0) {
+    public function getSameLevelCategoryTree($id = 0)
+    {
         //获取当前分类信息
-        if ((int)$id > 0) {
-            $info = $this->find($id);
+        if ((int) $id > 0) {
+            $info        = $this->find($id);
             $parent_info = $this->find($info['pid']);
-            $id   = $info['id'];
+            $id          = $info['id'];
         }
 
         //获取所有分类
         $map['status'] = array('eq', 1);
         $map['pid']    = array('eq', $info['pid']);
         $map['group']  = array('eq', $info['group']);
-        $list = $this->field($field)->where($map)->order('sort asc')->select();
+        $list          = $this->field($field)->where($map)->order('sort asc')->select();
 
         return $list;
     }

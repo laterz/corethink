@@ -2,30 +2,30 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 // 模块信息配置
 return array(
     // 模块信息
-    'info' => array(
+    'info'       => array(
         'name'        => 'User',
         'title'       => '用户',
         'icon'        => 'fa fa-users',
         'icon_color'  => '#F9B440',
         'description' => '用户中心模块',
         'developer'   => '南京科斯克网络科技有限公司',
-        'website'     => 'http://www.opencmf.cn',
+        'website'     => 'http://www.lingyun.net',
         'version'     => '1.3.0',
         'dependences' => array(
-            'Admin'   => '1.3.0',
-        )
+            'Admin' => '1.3.0',
+        ),
     ),
 
     // 用户中心导航
-    'user_nav' => array(
-        'title' => array(
+    'user_nav'   => array(
+        'title'  => array(
             'center' => '个人信息',
         ),
         'center' => array(
@@ -36,12 +36,12 @@ return array(
                 'color' => '#F68A3A',
             ),
             '1' => array(
-                'title' => '消息中心',
-                'icon'  => 'fa fa-envelope-o',
-                'url'   => 'User/Message/index',
-                'badge' => array('User/Message', 'newMessageCount'),
+                'title'       => '消息中心',
+                'icon'        => 'fa fa-envelope-o',
+                'url'         => 'User/Message/index',
+                'badge'       => array('User/Message', 'newMessageCount'),
                 'badge_class' => 'badge-danger',
-                'color' => '#80C243',
+                'color'       => '#80C243',
             ),
             '2' => array(
                 'title' => '修改密码',
@@ -50,7 +50,7 @@ return array(
                 'color' => '#45BEC3',
             ),
         ),
-        'main' => array(
+        'main'   => array(
             '0' => array(
                 'title' => '个人中心',
                 'icon'  => 'fa fa-tachometer',
@@ -60,105 +60,105 @@ return array(
     ),
 
     // 模块配置
-    'config' => array(
-        'status' => array(
+    'config'     => array(
+        'status'         => array(
             'title'   => '是否开启',
             'type'    => 'radio',
             'options' => array(
                 '1' => '开启',
                 '0' => '关闭',
             ),
-            'value' => '1',
+            'value'   => '1',
         ),
-        'reg_toggle' => array(
+        'reg_toggle'     => array(
             'title'   => '注册开关',
             'type'    => 'radio',
             'options' => array(
-                '1'   => '开启',
-                '0'   => '关闭',
+                '1' => '开启',
+                '0' => '关闭',
             ),
             'value'   => '1',
         ),
         'allow_reg_type' => array(
             'title'   => '允许注册类型',
-            'type'    =>'checkbox',
+            'type'    => 'checkbox',
             'options' => array(
                 'username' => '用户名注册',
                 'email'    => '邮箱注册',
                 'mobile'   => '手机注册',
             ),
-            'value'=> array(
+            'value'   => array(
                 '0' => 'username',
             ),
         ),
-        'deny_username' => array(
-            'title'   => '禁止注册的用户名',
-            'type'    =>'textarea',
-            'value'   => '',
+        'deny_username'  => array(
+            'title' => '禁止注册的用户名',
+            'type'  => 'textarea',
+            'value' => '',
         ),
-        'user_protocol' => array(
-            'title'   => '用户协议',
-            'type'    =>'kindeditor',
-            'value'=>'请在“后台——用户——用户设置”中设置',
+        'user_protocol'  => array(
+            'title' => '用户协议',
+            'type'  => 'kindeditor',
+            'value' => '请在“后台——用户——用户设置”中设置',
         ),
-        'behavior' => array(
+        'behavior'       => array(
             'title'   => '行为扩展',
-            'type'   =>'checkbox',
-            'options'=> array(
+            'type'    => 'checkbox',
+            'options' => array(
                 'User' => 'User',
             ),
-            'value'  => array(
-                '0'  => 'User',
+            'value'   => array(
+                '0' => 'User',
             ),
         ),
     ),
 
     // 后台菜单及权限节点配置
     'admin_menu' => array(
-        '1' => array(
+        '1'  => array(
             'pid'   => '0',
             'title' => '用户',
             'icon'  => 'fa fa-user',
         ),
-        '2' => array(
+        '2'  => array(
             'pid'   => '1',
             'title' => '用户管理',
             'icon'  => 'fa fa-folder-open-o',
         ),
-        '3' => array(
+        '3'  => array(
             'pid'   => '2',
             'title' => '用户设置',
             'icon'  => 'fa fa-wrench',
             'url'   => 'User/Index/module_config',
         ),
-        '4' => array(
+        '4'  => array(
             'pid'   => '2',
             'title' => '用户统计',
             'icon'  => 'fa fa-area-chart',
             'url'   => 'User/Index/index',
         ),
-        '5' => array(
+        '5'  => array(
             'pid'   => '2',
             'title' => '用户列表',
             'icon'  => 'fa fa-list',
             'url'   => 'User/User/index',
         ),
-        '6' => array(
+        '6'  => array(
             'pid'   => '5',
             'title' => '新增',
             'url'   => 'User/User/add',
         ),
-        '7' => array(
+        '7'  => array(
             'pid'   => '5',
             'title' => '编辑',
             'url'   => 'User/User/edit',
         ),
-        '8' => array(
+        '8'  => array(
             'pid'   => '5',
             'title' => '设置状态',
             'url'   => 'User/User/setStatus',
         ),
-        '9' => array(
+        '9'  => array(
             'pid'   => '2',
             'title' => '用户类型',
             'icon'  => 'fa fa-user',
@@ -199,6 +199,6 @@ return array(
             'pid'   => '13',
             'title' => '设置状态',
             'url'   => 'User/Attribute/setStatus',
-        )
-    )
+        ),
+    ),
 );

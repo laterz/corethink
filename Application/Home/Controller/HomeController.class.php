@@ -2,23 +2,27 @@
 // +----------------------------------------------------------------------
 // | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
+// | Copyright (c) 2014 http://www.lingyun.net All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace Home\Controller;
+
 use Common\Controller\CommonController;
+
 /**
  * 前台公共控制器
  * 为防止多分组Controller名称冲突，公共Controller名称统一使用模块名
  * @author jry <598821125@qq.com>
  */
-class HomeController extends CommonController {
+class HomeController extends CommonController
+{
     /**
      * 初始化方法
      * @author jry <598821125@qq.com>
      */
-    protected function _initialize() {
+    protected function _initialize()
+    {
         // 系统开关
         if (!C('TOGGLE_WEB_SITE')) {
             $this->error('站点已经关闭，请稍后访问~');
@@ -32,7 +36,8 @@ class HomeController extends CommonController {
      * 用户登录检测
      * @author jry <598821125@qq.com>
      */
-    protected function is_login() {
+    protected function is_login()
+    {
         //用户登录检测
         $uid = is_login();
         if ($uid) {
@@ -46,9 +51,10 @@ class HomeController extends CommonController {
      * 用户VIP权限检测
      * @author jry <598821125@qq.com>
      */
-    protected function is_vip($level = 1) {
+    protected function is_vip($level = 1)
+    {
         if (is_dir('./Application/Vip/')) {
-            $vip = is_vip();
+            $vip      = is_vip();
             $vip_info = D('Vip/Index')->find($vip);
             if ($vip && $vip_info['type_info']['level'] >= $level) {
                 return $vip;
@@ -66,57 +72,58 @@ class HomeController extends CommonController {
      * @param $script 严格模式要求处理的纪录的uid等于当前登陆用户UID
      * @author jry <598821125@qq.com>
      */
-    public function setStatus($model = CONTROLLER_NAME, $script = true) {
+    public function setStatus($model = CONTROLLER_NAME, $script = true)
+    {
         $ids    = I('request.ids');
         $status = I('request.status');
         if (empty($ids)) {
             $this->error('请选择要操作的数据');
         }
-        $model_primary_key = D($model)->getPk();
-        $map[$model_primary_key] = array('in',$ids);
+        $model_primary_key       = D($model)->getPk();
+        $map[$model_primary_key] = array('in', $ids);
         if ($script) {
             $map['uid'] = array('eq', is_login());
         }
         switch ($status) {
-            case 'forbid' :  // 禁用条目
+            case 'forbid': // 禁用条目
                 $data = array('status' => 0);
                 $this->editRow(
                     $model,
                     $data,
                     $map,
-                    array('success'=>'禁用成功','error'=>'禁用失败')
+                    array('success' => '禁用成功', 'error' => '禁用失败')
                 );
                 break;
-            case 'resume' :  // 启用条目
+            case 'resume': // 启用条目
                 $data = array('status' => 1);
                 $map  = array_merge(array('status' => 0), $map);
                 $this->editRow(
                     $model,
                     $data,
                     $map,
-                    array('success'=>'启用成功','error'=>'启用失败')
+                    array('success' => '启用成功', 'error' => '启用失败')
                 );
                 break;
-            case 'recycle' :  // 移动至回收站
+            case 'recycle': // 移动至回收站
                 $data['status'] = -1;
                 $this->editRow(
                     $model,
                     $data,
                     $map,
-                    array('success'=>'成功移至回收站','error'=>'删除失败')
+                    array('success' => '成功移至回收站', 'error' => '删除失败')
                 );
                 break;
-            case 'restore' :  // 从回收站还原
+            case 'restore': // 从回收站还原
                 $data = array('status' => 1);
                 $map  = array_merge(array('status' => -1), $map);
                 $this->editRow(
                     $model,
                     $data,
                     $map,
-                    array('success'=>'恢复成功','error'=>'恢复失败')
+                    array('success' => '恢复成功', 'error' => '恢复失败')
                 );
                 break;
-            case 'delete'  :  // 删除条目
+            case 'delete': // 删除条目
                 $result = D($model)->where($map)->delete();
                 if ($result) {
                     $this->success('删除成功，不可恢复！');
@@ -124,7 +131,7 @@ class HomeController extends CommonController {
                     $this->error('删除失败');
                 }
                 break;
-            default :
+            default:
                 $this->error('参数错误');
                 break;
         }
@@ -144,15 +151,16 @@ class HomeController extends CommonController {
      *                       )
      * @author jry <598821125@qq.com>
      */
-    final protected function editRow($model, $data, $map, $msg) {
-        $id = array_unique((array)I('id',0));
-        $id = is_array($id) ? implode(',',$id) : $id;
+    final protected function editRow($model, $data, $map, $msg)
+    {
+        $id = array_unique((array) I('id', 0));
+        $id = is_array($id) ? implode(',', $id) : $id;
         //如存在id字段，则加入该条件
         $fields = D($model)->getDbFields();
         if (in_array('id', $fields) && !empty($id)) {
             $where = array_merge(
-                array('id' => array('in', $id )),
-                (array)$where
+                array('id' => array('in', $id)),
+                (array) $where
             );
         }
         $msg = array_merge(
@@ -160,9 +168,9 @@ class HomeController extends CommonController {
                 'success' => '操作成功！',
                 'error'   => '操作失败！',
                 'url'     => ' ',
-                'ajax'    => IS_AJAX
+                'ajax'    => IS_AJAX,
             ),
-            (array)$msg
+            (array) $msg
         );
         $result = D($model)->where($map)->save($data);
         if ($result != false) {
