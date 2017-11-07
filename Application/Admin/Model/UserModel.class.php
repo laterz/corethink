@@ -99,7 +99,7 @@ class UserModel extends Model
      * 用户登录
      * @author jry <598821125@qq.com>
      */
-    public function login($username, $password, $map)
+    public function login($username, $password, $map = null)
     {
         //去除前后空格
         $username = trim($username);

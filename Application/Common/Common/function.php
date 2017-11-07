@@ -201,7 +201,7 @@ function format_bytes($size, $delimiter = '')
  * @return string
  * @author jry <598821125@qq.com>
  */
-function user_md5($str, $auth_key)
+function user_md5($str, $auth_key = '')
 {
     if (!$auth_key) {
         $auth_key = C('AUTH_KEY') ?: 'OpenCMF';
